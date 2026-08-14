@@ -4,6 +4,7 @@ this is a fanmade roblox website but with a twist, it has playable browser games
 # how to use it
 just download everything (keep everything as it is) and open the "index.html".
 if you want to add your own game, you can read the code as it has comments and everything
+if you dont understand how it works then blame the creator (which is AI)
 
 # how does it work
 when you press the game that you want to play, it will open a page with image, description and play button, it takes description and etc from the image value so you dont need to type 100 line of codes for 1 game
@@ -19,7 +20,7 @@ the games are:
 * cs2 gambling
 * pig game
 
-you can find evil calc and cs2 gambling in my profile if you want.
+you can find evil calcc pig game and cs2 gambling in my profile if you want.
 
 you can find some stuff that are scrapped/ not in the website, dont mind it, i might expand the website in future
 
