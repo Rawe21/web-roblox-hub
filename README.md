@@ -20,7 +20,7 @@ the games are:
 * cs2 gambling
 * pig game
 
-you can find evil calcc pig game and cs2 gambling in my profile if you want.
+you can find evil calc and cs2 gambling in my profile if you want.
 
 you can find some stuff that are scrapped/ not in the website, dont mind it, i might expand the website in future
 
