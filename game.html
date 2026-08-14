@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - Roblox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="game.css">
+    <link rel="icon" type="image/x-icon" href="img/robloxlogo.jpg">
+</head>
+<body>
+    <header>
+        <div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+            <img src="img/robloxlogowhite.jpg" alt="ROBLOX" class="site-logo">
+            <nav>
+                <a href="#">Charts</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Create</a>
+                <a href="#">Robux</a>
+            </nav>
+        </div>
+        <input type="text" placeholder="Search">
+        <div>
+            <div class="profile-pill" id="profilePill">
+                <img src="img/raweroblox.png" alt="">
+                <span>Rawe</span>
+                <span class="caret">▾</span>
+                <div class="dropdown-panel" id="profileDropdown">
+                    <div class="dropdown-title">Rawe</div>
+                    <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+                    <a href="avatar.html" class="dropdown-item">🎽 My Avatar</a>
+                    <a href="#" class="dropdown-item">🎒 Inventory</a>
+                    <hr>
+                    <a href="#" class="dropdown-item">⚙️ Settings</a>
+                    <a href="#" class="dropdown-item">🚪 Log Out</a>
+                </div>
+            </div>
+            <div class="icon-btn" id="notifBtn" role="button" tabindex="0">
+                <img src="img/icons8-notification-64.png" alt="Notifications" class="header-icon"><span class="badge-dot">3</span>
+                <div class="dropdown-panel" id="notifDropdown">
+                    <div class="dropdown-title">Notifications</div>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Bon accepted your friend request</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Your avatar item sold for 25 R$</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Emok mentioned you in a comment</a>
+                </div>
+            </div>
+            <button class="icon-btn robux-btn"><img src="img/edfae9388da4cd8496b885a8a2df613372500d9c.png" alt="Robux" class="header-icon"> 68</button>
+            <button class="icon-btn"><img src="img/settings.png" alt="Settings" class="header-icon"></button>
+        </div>
+    </header>
+    <main>
+        <aside id="sidebar">
+            <div>
+                <img src="img/raweroblox.png" alt="">
+                <strong>Rawe</strong>
+            </div>
+            <ul>
+                <li><a href="index.html"><span class="label">Home</span></a></li>
+                <li><a href="profile.html"><span class="label">Profile</span></a></li>
+                <li><a href="#"><span class="label">Messages</span> <b>88</b></a></li>
+                <li><a href="#"><span class="label">Connect</span> <b>172</b></a></li>
+                <li><a href="avatar.html"><span class="label">Avatar</span></a></li>
+                <li><a href="#"><span class="label">Inventory</span></a></li>
+                <li><a href="#"><span class="label">Trade</span></a></li>
+                <li><a href="#"><span class="label">Communities</span></a></li>
+                <li><a href="#"><span class="label">Blog</span></a></li>
+                <li><a href="#"><span class="label">Official Store</span></a></li>
+                <li><a href="#"><span class="label">Buy Gift Cards</span></a></li>
+            </ul>
+            <button><span class="label">Get Premium</span></button>
+        </aside>
+        <section>
+            <a href="index.html" class="game-detail-back">← Back to Home</a>
+
+            <div class="game-detail">
+                <div class="game-hero">
+                    <img id="gameHeroImg" src="" alt="">
+                </div>
+
+                <div class="game-detail-top">
+                    <img id="gameThumbImg" src="" alt="" class="game-detail-thumb">
+                    <div class="game-detail-heading">
+                        <h1 id="gameName">Loading...</h1>
+                        <div class="game-detail-stats">
+                            <span>👍 <strong id="gameRating">--</strong> Rating</span>
+                            <span><strong id="gameVisits">--</strong> Visits</span>
+                        </div>
+                    </div>
+                    <button id="playBtn" class="play-btn">▶ Play</button>
+                </div>
+
+                <div class="game-detail-about">
+                    <h2>About This Game</h2>
+                    <p id="gameDesc">—</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Jobs</a>
+            <a href="#">Blog</a>
+            <a href="#">Parents</a>
+            <a href="#">Developers</a>
+            <a href="#">Help</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <p>&copy; 2026 This is a personal fan-made clone project, not affiliated with the Roblox Corporation.</p>
+    </footer>
+    <script src="script.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

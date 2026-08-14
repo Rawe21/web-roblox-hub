@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar - Roblox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="avatar.css">
+    <link rel="icon" type="image/x-icon" href="img/robloxlogo.jpg">
+</head>
+<body>
+    <header>
+        <div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+            <img src="img/robloxlogowhite.jpg" alt="ROBLOX" class="site-logo">
+            <nav>
+                <a href="#">Charts</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Create</a>
+                <a href="#">Robux</a>
+            </nav>
+        </div>
+        <input type="text" placeholder="Search">
+        <div>
+            <div class="profile-pill" id="profilePill">
+                <img src="img/raweroblox.png" alt="">
+                <span>Rawe</span>
+                <span class="caret">▾</span>
+                <div class="dropdown-panel" id="profileDropdown">
+                    <div class="dropdown-title">Rawe</div>
+                    <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+                    <a href="avatar.html" class="dropdown-item">🎽 My Avatar</a>
+                    <a href="#" class="dropdown-item">🎒 Inventory</a>
+                    <hr>
+                    <a href="#" class="dropdown-item">⚙️ Settings</a>
+                    <a href="#" class="dropdown-item">🚪 Log Out</a>
+                </div>
+            </div>
+            <div class="icon-btn" id="notifBtn" role="button" tabindex="0">
+                <img src="img/icons8-notification-64.png" alt="Notifications" class="header-icon"><span class="badge-dot">3</span>
+                <div class="dropdown-panel" id="notifDropdown">
+                    <div class="dropdown-title">Notifications</div>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Bon accepted your friend request</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Your avatar item sold for 25 R$</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Emok mentioned you in a comment</a>
+                </div>
+            </div>
+            <button class="icon-btn robux-btn"><img src="img/edfae9388da4cd8496b885a8a2df613372500d9c.png" alt="Robux" class="header-icon"> 68</button>
+            <button class="icon-btn"><img src="img/settings.png" alt="Settings" class="header-icon"></button>
+        </div>
+    </header>
+    <main>
+        <aside id="sidebar">
+
+            <div>
+                <img src="img/raweroblox.png" alt="">
+
+                <strong>Rawe</strong>
+            </div>
+            <ul>
+                <li><a href="index.html"><span class="label">Home</span></a></li>
+                <li><a href="profile.html"><span class="label">Profile</span></a></li>
+                <li><a href="#"><span class="label">Messages</span> <b>88</b></a></li>
+                <li><a href="#"><span class="label">Connect</span> <b>172</b></a></li>
+                <li><a href="avatar.html" class="active"><span class="label">Avatar</span></a></li>
+                <li><a href="#"><span class="label">Inventory</span></a></li>
+                <li><a href="#"><span class="label">Trade</span></a></li>
+                <li><a href="#"><span class="label">Communities</span></a></li>
+                <li><a href="#"><span class="label">Blog</span></a></li>
+                <li><a href="#"><span class="label">Official Store</span></a></li>
+                <li><a href="#"><span class="label">Buy Gift Cards</span></a></li>
+            </ul>
+            <button><span class="label">Get Premium</span></button>
+        </aside>
+        <section>
+            <h1>Avatar</h1>
+
+            <div class="avatar-editor">
+                <!-- Preview panel -->
+                <div class="avatar-preview-panel">
+                    <div class="avatar-preview-stage">
+                        <img src="img/raweroblox.png" alt="Your avatar">
+                    </div>
+                    <div class="avatar-preview-actions">
+                        <button>Edit Avatar</button>
+                        <button class="secondary">Try On Random</button>
+                    </div>
+                    <div class="avatar-equipped">
+                        <h4>Currently Wearing</h4>
+                        <ul>
+                            <li data-slot="hats" class="is-empty"><span class="slot-label">Hat</span><span class="slot-value">None</span></li>
+                            <li data-slot="faces" class="is-empty"><span class="slot-label">Face</span><span class="slot-value">None</span></li>
+                            <li data-slot="shirts" class="is-empty"><span class="slot-label">Shirt</span><span class="slot-value">None</span></li>
+                            <li data-slot="pants" class="is-empty"><span class="slot-label">Pants</span><span class="slot-value">None</span></li>
+                            <li data-slot="gear" class="is-empty"><span class="slot-label">Gear</span><span class="slot-value">None</span></li>
+                            <li data-slot="bundles" class="is-empty"><span class="slot-label">Bundle</span><span class="slot-value">None</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Items panel -->
+                <div class="avatar-items-panel">
+                    <div class="avatar-tabs" id="avatarTabs">
+                        <button class="avatar-tab active" data-category="all">All</button>
+                        <button class="avatar-tab" data-category="hats">Hats</button>
+                        <button class="avatar-tab" data-category="faces">Faces</button>
+                        <button class="avatar-tab" data-category="shirts">Shirts</button>
+                        <button class="avatar-tab" data-category="pants">Pants</button>
+                        <button class="avatar-tab" data-category="gear">Gear</button>
+                        <button class="avatar-tab" data-category="bundles">Bundles</button>
+                    </div>
+
+                    <div class="avatar-items-grid" id="avatarItemsGrid">
+
+                        <!-- Hats -->
+                        <a href="#" class="avatar-item" data-category="hats" data-name="Cool Cap">
+                            <span class="equipped-check">✓</span>
+                            <img src="" alt="" class="avatar-item-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <span class="avatar-item-thumb--empty" style="display:none;">🧢</span>
+                            <h4>Cool Cap</h4>
+                            <p>Hat</p>
+                        </a>
+                        <a href="#" class="avatar-item" data-category="hats" data-name="Halo">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">😇</span>
+                            <h4>Halo</h4>
+                            <p>Hat</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="hats">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Hat</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                        <!-- Faces -->
+                        <a href="#" class="avatar-item" data-category="faces" data-name="Cheerful Smile">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">🙂</span>
+                            <h4>Cheerful Smile</h4>
+                            <p>Face</p>
+                        </a>
+                        <a href="#" class="avatar-item" data-category="faces" data-name="Cool Shades">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">😎</span>
+                            <h4>Cool Shades</h4>
+                            <p>Face</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="faces">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Face</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                        <!-- Shirts -->
+                        <a href="#" class="avatar-item" data-category="shirts" data-name="Red Hoodie">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">👕</span>
+                            <h4>Red Hoodie</h4>
+                            <p>Shirt</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="shirts">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Shirt</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                        <!-- Pants -->
+                        <a href="#" class="avatar-item" data-category="pants" data-name="Black Jeans">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">👖</span>
+                            <h4>Black Jeans</h4>
+                            <p>Pants</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="pants">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Pants</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                        <!-- Gear -->
+                        <a href="#" class="avatar-item" data-category="gear" data-name="Speed Boost Wings">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">🪽</span>
+                            <h4>Speed Boost Wings</h4>
+                            <p>Gear</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="gear">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Gear</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                        <!-- Bundles -->
+                        <a href="#" class="avatar-item" data-category="bundles" data-name="Starter Bundle">
+                            <span class="equipped-check">✓</span>
+                            <span class="avatar-item-thumb--empty">🎁</span>
+                            <h4>Starter Bundle</h4>
+                            <p>Bundle</p>
+                        </a>
+                        <a href="#" class="avatar-item avatar-item--empty" data-category="bundles">
+                            <span class="avatar-item-thumb--empty">+</span>
+                            <h4>Add Bundle</h4>
+                            <p>&nbsp;</p>
+                        </a>
+
+                    </div>
+                    <p class="avatar-items-empty" id="avatarItemsEmpty" style="display:none;">No items in this category yet.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Jobs</a>
+            <a href="#">Blog</a>
+            <a href="#">Parents</a>
+            <a href="#">Developers</a>
+            <a href="#">Help</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <p>&copy; 2026 This is a personal fan-made clone project, not affiliated with the Roblox Corporation.</p>
+    </footer>
+    <script src="script.js"></script>
+    <script src="avatar.js"></script>
+</body>
+</html>

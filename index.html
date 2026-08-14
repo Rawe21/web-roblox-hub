@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Roblox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="img/robloxlogo.jpg">
+</head>
+<body>
+    <header>
+        <div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+            <img src="img/robloxlogowhite.jpg" alt="ROBLOX" class="site-logo">
+            <nav>
+                <a href="#">Charts</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Create</a>
+                <a href="#">Robux</a>
+            </nav>
+        </div>
+        <input type="text" placeholder="Search">
+        <div>
+            <div class="profile-pill" id="profilePill">
+                <img src="img/raweroblox.png" alt="">
+                <span>Rawe</span>
+                <span class="caret">▾</span>
+                <div class="dropdown-panel" id="profileDropdown">
+                    <div class="dropdown-title">Rawe</div>
+                    <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+                    <a href="avatar.html" class="dropdown-item">🎽 My Avatar</a>
+                    <a href="#" class="dropdown-item">🎒 Inventory</a>
+                    <hr>
+                    <a href="#" class="dropdown-item">⚙️ Settings</a>
+                    <a href="#" class="dropdown-item">🚪 Log Out</a>
+                </div>
+            </div>
+            <div class="icon-btn" id="notifBtn" role="button" tabindex="0">
+                <img src="img/icons8-notification-64.png" alt="Notifications" class="header-icon"><span class="badge-dot">3</span>
+                <div class="dropdown-panel" id="notifDropdown">
+                    <div class="dropdown-title">Notifications</div>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Bon accepted your friend request</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Your avatar item sold for 25 R$</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Emok mentioned you in a comment</a>
+                </div>
+            </div>
+            <button class="icon-btn robux-btn"><img src="img/edfae9388da4cd8496b885a8a2df613372500d9c.png" alt="Robux" class="header-icon"> 68</button>
+            <button class="icon-btn"><img src="img/settings.png" alt="Settings" class="header-icon"></button>
+        </div>
+    </header>
+    <main>
+        <aside id="sidebar">
+            
+            <div>
+                <img src="img/raweroblox.png" alt="">
+                
+                <strong>Rawe</strong>
+            </div>
+            <ul>
+                <li><a href="#" class="active"><span class="label">Home</span></a></li>
+                <li><a href="profile.html"><span class="label">Profile</span></a></li>
+                <li><a href="#"><span class="label">Messages</span> <b>88</b></a></li>
+                <li><a href="#"><span class="label">Connect</span> <b>172</b></a></li>
+                <li><a href="avatar.html"><span class="label">Avatar</span></a></li>
+                <li><a href="#"><span class="label">Inventory</span></a></li>
+                <li><a href="#"><span class="label">Trade</span></a></li>
+                <li><a href="#"><span class="label">Communities</span></a></li>
+                <li><a href="#"><span class="label">Blog</span></a></li>
+                <li><a href="#"><span class="label">Official Store</span></a></li>
+                <li><a href="#"><span class="label">Buy Gift Cards</span></a></li>
+            </ul>
+            <button><span class="label">Get Premium</span></button>
+        </aside>
+        <section>
+            <h1>Home</h1>
+
+<!-- Continue Container -->
+            <div>
+                <div class="section-head">
+                    <h2>Continue Where You Left Off</h2>
+                    <div class="carousel-controls" data-target="continueRow">
+                        <button class="scroll-left">‹</button>
+                        <button class="scroll-right">›</button>
+                    </div>
+                </div>
+                <div class="tile-row" id="continueRow">
+                    <a href="#" class="game-tile continue-tile" data-name="Twenty One" data-img="img/twentyone.jpg" data-rating="92%" data-visits="2.3B" data-desc="Sail the seas, awaken devil fruit powers, and battle your way through a massive open world packed with bosses, guilds, and secret islands." data-play="Games/Pig Game/index.html">
+                        <span class="play-badge">CONTINUE</span>
+                        <img src="img/twentyone.jpg" alt="">
+                        <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+                        <h3>Twenty One</h3>
+                        <p>Last played 2 hours ago</p>
+                    </a>
+                    <a href="#" class="game-tile continue-tile" data-name="Evil Calculator" data-img="img/forsaken.png" data-rating="85%" data-visits="412M" data-desc="A tense horror survival experience — solve puzzles, dodge threats, and try to make it out of Forsaken in one piece." data-play="Games/Calculator/index.html">
+                        <span class="play-badge">CONTINUE</span>
+                        <img src="img/forsaken.png" alt="">
+                        <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+                        <h3>Evil Calculator</h3>
+                        <p>Last played yesterday</p>
+                    </a>
+                    <a href="#" class="game-tile continue-tile" data-name="CS2 Case Simulator" data-img="img/casesi.png" data-rating="96%" data-visits="4.2K" data-desc="Open cases, collect skins, and trade your way to the rarest items in this CS2-inspired case simulator." data-play="Games/CS2 Simulator Case/index.html">
+                        <span class="play-badge">CONTINUE</span>
+                        <img src="img/casesi.png" alt="">
+                        <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
+                        <h3>CS2 Case Simulator</h3>
+                        <p>Last played 3 days ago</p>
+                    </a>
+                </div>
+            </div>
+
+<!-- Friends Container -->
+            <div>
+                <div class="section-head">
+                    <h2>Friends (147) <a href="#">See All -></a></h2>
+                    <div class="carousel-controls" data-target="friendsRow">
+                        <button class="scroll-left">‹</button>
+                        <button class="scroll-right">›</button>
+                    </div>
+                </div>
+                <div class="tile-row" id="friendsRow">
+                    <a href="#" class="friend-tile">
+                        <span>+</span>
+                        <p>Add Friends</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/noFilter.png" alt="">
+                        <p>Hazard</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/bonr.png" alt="">
+                        <p>Bon</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/emok.png" alt="">
+                        <p>Emok</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/azurer.png" alt="">
+                        <p>Azure</p>
+                    </a>
+                    <a href="#" class="friend-tile friend-tile--empty">
+                        <span class="empty-avatar"></span>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="friend-tile friend-tile--empty">
+                        <span class="empty-avatar"></span>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="friend-tile friend-tile--empty">
+                        <span class="empty-avatar"></span>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+
+<!-- Recommended Container -->
+            <div>
+                <div class="section-head">
+                    <h2>Recommended For You</h2>
+                    <div class="carousel-controls" data-target="recommendedRow">
+                        <button class="scroll-left">‹</button>
+                        <button class="scroll-right">›</button>
+                    </div>
+                </div>
+                <div class="tile-row" id="recommendedRow">
+                    <a href="#" class="game-tile" data-name="The Battle Bricks" data-img="img/tbbroblox.jpg" data-rating="84%" data-visits="3.6M" data-desc="Team up, build your loadout, and fight across brick-built battlegrounds in this fast-paced PvP shooter." data-play="#">
+                        <img src="img/tbbroblox.jpg" alt="">
+                        <h3>The Battle Bricks</h3>
+                        <p>👍 84% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="[YARA YARA] Phonk Clicker 🎵" data-img="img/yarayaraphonkroblox.jpg" data-rating="98%" data-visits="950K" data-desc="Click to the beat, unlock phonk tracks, and stack up multipliers in this rhythm-powered clicker." data-play="#">
+                        <img src="img/yarayaraphonkroblox.jpg" alt="">
+                        <h3>[YARA YARA] Phonk Clicker 🎵</h3>
+                        <p>👍 98% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="CS2 Case Simulator" data-img="img/casesi.png" data-rating="96%" data-visits="4.2K" data-desc="Open cases, collect skins, and trade your way to the rarest items in this CS2-inspired case simulator." data-play="Games/CS2 Simulator Case/index.html">
+                        <img src="img/casesi.png" alt="">
+                        <h3>CS2 Case Simulator</h3>
+                        <p>👍 96% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="Twenty One" data-img="img/twentyone.jpg" data-rating="92%" data-visits="2.3B" data-desc="Sail the seas, awaken devil fruit powers, and battle your way through a massive open world packed with bosses, guilds, and secret islands." data-play="Games/Pig Game/index.html">
+                        <img src="img/twentyone.jpg" alt="">
+                        <h3>Twenty One</h3>
+                        <p>👍 92% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="Evil Calculator" data-img="img/forsaken.png" data-rating="85%" data-visits="412M" data-desc="A tense horror survival experience — solve puzzles, dodge threats, and try to make it out of Forsaken in one piece." data-play="Games/Calculator/index.html">
+                        <img src="img/forsaken.png" alt="">
+                        <h3>Evil Calculator</h3>
+                        <p>👍 85% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+
+<!-- Popular Container -->
+            <div>
+                <div class="section-head">
+                    <h2>Popular Right Now</h2>
+                    <div class="carousel-controls" data-target="popularRow">
+                        <button class="scroll-left">‹</button>
+                        <button class="scroll-right">›</button>
+                    </div>
+                </div>
+                <div class="tile-row" id="popularRow">
+                    <a href="#" class="game-tile" data-name="Twenty One" data-img="img/twentyone.jpg" data-rating="92%" data-visits="2.3B" data-desc="Sail the seas, awaken devil fruit powers, and battle your way through a massive open world packed with bosses, guilds, and secret islands." data-play="Games/Pig Game/index.html">
+                        <img src="img/twentyone.jpg" alt="">
+                        <h3>Twenty One</h3>
+                        <p>👍 92% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="Evil Calculator" data-img="img/forsaken.png" data-rating="85%" data-visits="412M" data-desc="A tense horror survival experience — solve puzzles, dodge threats, and try to make it out of Forsaken in one piece." data-play="Games/Calculator/index.html">
+                        <img src="img/forsaken.png" alt="">
+                        <h3>Evil Calculator</h3>
+                        <p>👍 85% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="The Battle Bricks" data-img="img/tbbroblox.jpg" data-rating="84%" data-visits="3.6M" data-desc="Team up, build your loadout, and fight across brick-built battlegrounds in this fast-paced PvP shooter." data-play="#">
+                        <img src="img/tbbroblox.jpg" alt="">
+                        <h3>The Battle Bricks</h3>
+                        <p>👍 84% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+
+<!-- Highly Rated Container -->
+            <div>
+                <div class="section-head">
+                    <h2>Highly Rated</h2>
+                    <div class="carousel-controls" data-target="ratedRow">
+                        <button class="scroll-left">‹</button>
+                        <button class="scroll-right">›</button>
+                    </div>
+                </div>
+                <div class="tile-row" id="ratedRow">
+                    <a href="#" class="game-tile" data-name="[YARA YARA] Phonk Clicker 🎵" data-img="img/yarayaraphonkroblox.jpg" data-rating="98%" data-visits="950K" data-desc="Click to the beat, unlock phonk tracks, and stack up multipliers in this rhythm-powered clicker." data-play="#">
+                        <img src="img/yarayaraphonkroblox.jpg" alt="">
+                        <h3>[YARA YARA] Phonk Clicker 🎵</h3>
+                        <p>👍 98% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="CS2 Case Simulator" data-img="img/casesi.png" data-rating="96%" data-visits="4.2K" data-desc="Open cases, collect skins, and trade your way to the rarest items in this CS2-inspired case simulator." data-play="Games/CS2 Simulator Case/index.html">
+                        <img src="img/casesi.png" alt="">
+                        <h3>CS2 Case Simulator</h3>
+                        <p>👍 96% Rating</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile game-tile--empty">
+                        <span class="empty-thumb">+</span>
+                        <h3>Add Game</h3>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Jobs</a>
+            <a href="#">Blog</a>
+            <a href="#">Parents</a>
+            <a href="#">Developers</a>
+            <a href="#">Help</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <p>&copy; 2026 This is a personal fan-made clone project, not affiliated with the Roblox Corporation.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

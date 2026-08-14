@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Roblox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile.css">
+    <link rel="icon" type="image/x-icon" href="img/robloxlogo.jpg">
+</head>
+<body>
+    <header>
+        <div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+            <img src="img/robloxlogowhite.jpg" alt="ROBLOX" class="site-logo">
+            <nav>
+                <a href="#">Charts</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Create</a>
+                <a href="#">Robux</a>
+            </nav>
+        </div>
+        <input type="text" placeholder="Search">
+        <div>
+            <div class="profile-pill" id="profilePill">
+                <img src="img/raweroblox.png" alt="">
+                <span>Rawe</span>
+                <span class="caret">▾</span>
+                <div class="dropdown-panel" id="profileDropdown">
+                    <div class="dropdown-title">Rawe</div>
+                    <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+                    <a href="avatar.html" class="dropdown-item">🎽 My Avatar</a>
+                    <a href="#" class="dropdown-item">🎒 Inventory</a>
+                    <hr>
+                    <a href="#" class="dropdown-item">⚙️ Settings</a>
+                    <a href="#" class="dropdown-item">🚪 Log Out</a>
+                </div>
+            </div>
+            <div class="icon-btn" id="notifBtn" role="button" tabindex="0">
+                <img src="img/icons8-notification-64.png" alt="Notifications" class="header-icon"><span class="badge-dot">3</span>
+                <div class="dropdown-panel" id="notifDropdown">
+                    <div class="dropdown-title">Notifications</div>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Bon accepted your friend request</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Your avatar item sold for 25 R$</a>
+                    <a href="#" class="dropdown-item"><span class="dot"></span>Emok mentioned you in a comment</a>
+                </div>
+            </div>
+            <button class="icon-btn robux-btn"><img src="img/edfae9388da4cd8496b885a8a2df613372500d9c.png" alt="Robux" class="header-icon"> 68</button>
+            <button class="icon-btn"><img src="img/settings.png" alt="Settings" class="header-icon"></button>
+        </div>
+    </header>
+    <main>
+        <aside id="sidebar">
+            
+            <div>
+                <img src="img/raweroblox.png" alt="">
+                
+                <strong>Rawe</strong>
+            </div>
+            <ul>
+                <li><a href="index.html"><span class="label">Home</span></a></li>
+                <li><a href="profile.html" class="active"><span class="label">Profile</span></a></li>
+                <li><a href="#"><span class="label">Messages</span> <b>88</b></a></li>
+                <li><a href="#"><span class="label">Connect</span> <b>172</b></a></li>
+                <li><a href="avatar.html"><span class="label">Avatar</span></a></li>
+                <li><a href="#"><span class="label">Inventory</span></a></li>
+                <li><a href="#"><span class="label">Trade</span></a></li>
+                <li><a href="#"><span class="label">Communities</span></a></li>
+                <li><a href="#"><span class="label">Blog</span></a></li>
+                <li><a href="#"><span class="label">Official Store</span></a></li>
+                <li><a href="#"><span class="label">Buy Gift Cards</span></a></li>
+            </ul>
+            <button><span class="label">Get Premium</span></button>
+        </aside>
+        <section>
+<!-- Profile Header Card -->
+            <div class="profile-card">
+                <div class="profile-banner"></div>
+                <div class="profile-header">
+                    <img src="img/raweroblox.png" alt="Avatar" class="profile-avatar">
+                    <div class="profile-info">
+                        <h1>Rawe</h1>
+                        <p class="profile-username">@SubToRawe</p>
+                        <div class="profile-stats">
+                            <div class="stat"><strong>147</strong><span>Friends</span></div>
+                            <div class="stat"><strong>21</strong><span>Followers</span></div>
+                            <div class="stat"><strong>3</strong><span>Following</span></div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button>Add Friend</button>
+                        <button>Message</button>
+                        <a href="https://www.roblox.com/users/3411139643/profile" target="_blank" rel="noopener">View on Roblox</a>
+                    </div>
+                </div>
+            </div>
+
+<!-- About Container -->
+            <div>
+                <h2>About</h2>
+                <div class="about-box">
+                    <p>###########</p>
+                    <p class="join-date">05/21/2011</p>
+                </div>
+            </div>
+
+<!-- Friends Container -->
+            <div>
+                <h2>Friends (147) <a href="#">See All -></a></h2>
+                <div class="game-grid">
+                    <a href="#" class="friend-tile">
+                        <img src="img/noFilter.png" alt="">
+                        <p>Hazard</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/bonr.png" alt="">
+                        <p>Bon</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/emok.png" alt="">
+                        <p>Emok</p>
+                    </a>
+                    <a href="#" class="friend-tile">
+                        <img src="img/azurer.png" alt="">
+                        <p>Azure</p>
+                    </a>
+                    <a href="#" class="friend-tile friend-tile--empty">
+                        <span class="empty-avatar"></span>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="friend-tile friend-tile--empty">
+                        <span class="empty-avatar"></span>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+
+<!-- Favorite Games Container -->
+            <div>
+                <h2>Favorite Games</h2>
+                <div class="game-grid">
+                    <a href="#" class="game-tile" data-name="Twenty One" data-img="img/twentyone.jpg" data-rating="92%" data-visits="2.3B" data-desc="Sail the seas, awaken devil fruit powers, and battle your way through a massive open world packed with bosses, guilds, and secret islands." data-play="Games/Pig Game/index.html">
+                        <img src="img/twentyone.jpg" alt="">
+                        <h3>Twenty One</h3>
+                        <p>👍 92% Rating</p>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="Evil Calculator" data-img="img/forsaken.png" data-rating="85%" data-visits="412M" data-desc="A tense horror survival experience — solve puzzles, dodge threats, and try to make it out of Forsaken in one piece." data-play="Games/Calculator/index.html">
+                        <img src="img/forsaken.png" alt="">
+                        <h3>Evil Calculator</h3>
+                        <p>👍 85% Rating</p>
+                        <p>&nbsp;</p>
+                    </a>
+                    <a href="#" class="game-tile" data-name="CS2 Case Simulator" data-img="img/casesi.png" data-rating="96%" data-visits="4.2K" data-desc="Open cases, collect skins, and trade your way to the rarest items in this CS2-inspired case simulator." data-play="Games/CS2 Simulator Case/index.html">
+                        <img src="img/casesi.png" alt="">
+                        <h3>CS2 Case Simulator</h3>
+                        <p>👍 96% Rating</p>
+                        <p>&nbsp;</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Jobs</a>
+            <a href="#">Blog</a>
+            <a href="#">Parents</a>
+            <a href="#">Developers</a>
+            <a href="#">Help</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <p>&copy; 2026 This is a personal fan-made clone project, not affiliated with the Roblox Corporation.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

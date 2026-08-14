@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS2 Skin Simulator</title>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #12151d;
+    --surface2: #181c28;
+    --surface3: #1e2335;
+    --border: #252b3d;
+    --text: #c8d0e8;
+    --muted: #5a6280;
+    --accent: #e8a83e;
+    --accent2: #c48c28;
+    --green: #3ecf6a;
+    --blue: #4b8fff;
+    --purple: #9b5fff;
+    --pink: #d433e0;
+    --red: #e84848;
+    --gold: #f0c040;
+    --gold-glow: rgba(240,192,64,0.3);
+    --red-glow: rgba(232,72,72,0.25);
+    --pink-glow: rgba(212,51,224,0.25);
+    --radius: 8px;
+    --transition: 0.15s ease;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(18,21,29,0.97); border-bottom: 1px solid var(--border);
+    padding: 0 20px; height: 54px; backdrop-filter: blur(8px);
+  }
+  .logo { font-size: 16px; font-weight: 800; color: var(--accent); letter-spacing: .08em; white-space: nowrap; text-shadow: 0 0 20px rgba(232,168,62,0.4); }
+  .balance-display {
+    margin-left: auto; display: flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 5px 14px; border-radius: var(--radius);
+    font-size: 15px; font-weight: 700; color: var(--green);
+  }
+  nav { display: flex; gap: 2px; }
+  nav button {
+    background: none; border: none; color: var(--muted); padding: 0 14px; height: 54px;
+    cursor: pointer; font-size: 13px; font-weight: 600; letter-spacing: .04em;
+    border-bottom: 2px solid transparent; transition: all var(--transition);
+  }
+  nav button:hover { color: var(--text); }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* VIEWS */
+  .view { display: none; padding: 18px; max-width: 1500px; margin: 0 auto; }
+  .view.active { display: block; }
+
+  /* TOOLBAR */
+  .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar input[type=search], .toolbar select {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 12px; border-radius: var(--radius); font-size: 13px; outline: none;
+    transition: border-color var(--transition);
+  }
+  .toolbar input[type=search]:focus, .toolbar select:focus { border-color: var(--accent); }
+  .toolbar input[type=search] { flex: 1; min-width: 200px; }
+  .result-count { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+  }
+
+  /* ITEM CARD */
+  .item-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer; position: relative;
+  }
+  .item-card:hover { transform: translateY(-3px); }
+  .item-card .rarity-bar { height: 3px; width: 100%; }
+  .item-card.blue .rarity-bar { background: var(--blue); }
+  .item-card.purple .rarity-bar { background: var(--purple); }
+  .item-card.pink .rarity-bar { background: var(--pink); }
+  .item-card.red .rarity-bar { background: var(--red); }
+  .item-card.gold .rarity-bar { background: linear-gradient(90deg, var(--gold), #fff8a0, var(--gold)); }
+  .item-card.gold { box-shadow: 0 0 16px var(--gold-glow); border-color: rgba(240,192,64,0.3); }
+  .item-card.red { box-shadow: 0 0 12px var(--red-glow); }
+  .item-card.pink { box-shadow: 0 0 10px var(--pink-glow); }
+  .item-card .card-img {
+    width: 100%; height: 90px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); position: relative; overflow: hidden;
+  }
+  .item-card .card-img img {
+    width: 90%; height: 90%; object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+    transition: transform 0.2s;
+  }
+  .item-card:hover .card-img img { transform: scale(1.08); }
+  .item-card .card-body { padding: 9px 10px; }
+  .item-card h4 { font-size: 11.5px; font-weight: 600; color: var(--text); margin: 4px 0 2px; line-height: 1.3; }
+  .item-card .wear-tag { font-size: 10px; color: var(--muted); }
+  .item-card .float-tag { font-size: 10px; color: var(--muted); font-family: monospace; margin-bottom: 4px; }
+  .item-card .price-row { display: flex; align-items: center; gap: 5px; margin-top: 4px; }
+  .item-card .price { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .item-card .price-change { font-size: 10px; font-weight: 600; }
+  .item-card .price-change.up { color: var(--green); }
+  .item-card .price-change.down { color: var(--red); }
+  .item-card .rarity-name { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .item-card.blue .rarity-name { color: var(--blue); }
+  .item-card.purple .rarity-name { color: var(--purple); }
+  .item-card.pink .rarity-name { color: var(--pink); }
+  .item-card.red .rarity-name { color: var(--red); }
+  .item-card.gold .rarity-name { color: var(--gold); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 7px 14px; border: none; border-radius: var(--radius);
+    cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .03em;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:hover { filter: brightness(1.15); }
+  .btn-primary { background: var(--accent); color: #000; width: 100%; }
+  .btn-sell { background: linear-gradient(135deg, #8b2020, #a02525); color: #fff; width: 100%; }
+  .btn-danger { background: #8b2020; color: #fff; }
+  .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-upgrade { background: linear-gradient(135deg, #1a6b3a, #25a058); color: #fff; }
+
+  /* CASES VIEW */
+  .case-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .case-tab {
+    padding: 6px 13px; background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); border-radius: var(--radius); cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all var(--transition);
+  }
+  .case-tab.active, .case-tab:hover { border-color: var(--accent); color: var(--accent); background: var(--surface2); }
+
+  .case-open-area { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .case-open-area h3 { margin-bottom: 4px; font-size: 17px; font-weight: 700; }
+  .case-open-area .case-price { color: var(--accent); font-size: 13px; margin-bottom: 14px; }
+
+  .spinner-wrap { position: relative; overflow: hidden; height: 120px; border-radius: var(--radius); background: #070910; border: 1px solid var(--border); margin-bottom: 14px; }
+  .spinner-needle { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--accent); z-index: 5; transform: translateX(-50%); pointer-events: none; box-shadow: 0 0 8px var(--accent); }
+  .spinner-needle::before, .spinner-needle::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    border-left: 7px solid transparent; border-right: 7px solid transparent;
+  }
+  .spinner-needle::before { top: 0; border-top: 9px solid var(--accent); }
+  .spinner-needle::after { bottom: 0; border-bottom: 9px solid var(--accent); }
+  .spinner-track { display: flex; height: 100%; will-change: transform; }
+  .spinner-item {
+    min-width: 140px; height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; border-right: 1px solid #1a1e2a;
+    font-size: 10px; font-weight: 600; text-align: center; padding: 6px; gap: 3px;
+  }
+  .spinner-item img { width: 60px; height: 45px; object-fit: contain; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.8)); }
+  .spinner-item.blue { background: linear-gradient(to top, rgba(75,143,255,.2), rgba(10,12,20,0.8)); color: var(--blue); }
+  .spinner-item.purple { background: linear-gradient(to top, rgba(155,95,255,.2), rgba(10,12,20,0.8)); color: var(--purple); }
+  .spinner-item.pink { background: linear-gradient(to top, rgba(212,51,224,.25), rgba(10,12,20,0.8)); color: var(--pink); }
+  .spinner-item.red { background: linear-gradient(to top, rgba(232,72,72,.25), rgba(10,12,20,0.8)); color: var(--red); }
+  .spinner-item.gold { background: linear-gradient(to top, rgba(240,192,64,.3), rgba(10,12,20,0.8)); color: var(--gold); }
+
+  .open-btns { display: flex; gap: 10px; }
+  .open-btns .btn { flex: 1; padding: 11px; font-size: 13px; }
+
+  .section-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; font-weight: 700; }
+
+  /* TRADE UP */
+  .tu-layout { display: grid; grid-template-columns: 300px 1fr; gap: 18px; }
+  @media (max-width: 700px) { .tu-layout { grid-template-columns: 1fr; } }
+  .tu-slots-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; align-self: start; }
+  .tu-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 14px; }
+  .tu-slot {
+    height: 72px; background: var(--surface2); border: 1px dashed var(--border);
+    border-radius: var(--radius); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-size: 9px; color: var(--muted);
+    cursor: pointer; text-align: center; padding: 4px; gap: 2px; transition: border-color 0.15s;
+  }
+  .tu-slot.filled { border-style: solid; }
+  .tu-slot.filled.blue { border-color: var(--blue); color: var(--blue); }
+  .tu-slot.filled.purple { border-color: var(--purple); color: var(--purple); }
+  .tu-slot.filled.pink { border-color: var(--pink); color: var(--pink); }
+  .tu-slot.filled.red { border-color: var(--red); color: var(--red); }
+  .tu-slot img { width: 44px; height: 32px; object-fit: contain; }
+  .tu-info { font-size: 11px; color: var(--muted); margin-bottom: 12px; line-height: 1.7; }
+  .tu-info span { color: var(--text); font-weight: 600; }
+  .tu-craft-btn { width: 100%; padding: 11px; font-size: 14px; }
+
+  /* UPGRADER */
+  .upgrader-layout { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 800px) { .upgrader-layout { grid-template-columns: 1fr; } }
+  .upgrade-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .upgrade-panel h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 12px; font-weight: 700; }
+  .upgrade-slot {
+    min-height: 140px; background: var(--surface2); border: 2px dashed var(--border);
+    border-radius: 10px; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s; padding: 12px;
+  }
+  .upgrade-slot.has-item { border-style: solid; }
+  .upgrade-slot.has-item.gold { border-color: var(--gold); }
+  .upgrade-slot.has-item.red { border-color: var(--red); }
+  .upgrade-slot.has-item.pink { border-color: var(--pink); }
+  .upgrade-slot.has-item.purple { border-color: var(--purple); }
+  .upgrade-slot.has-item.blue { border-color: var(--blue); }
+  .upgrade-slot img { width: 100px; height: 75px; object-fit: contain; }
+  .upgrade-slot .slot-name { font-size: 12px; font-weight: 600; text-align: center; }
+  .upgrade-slot .slot-price { font-size: 14px; font-weight: 700; color: var(--accent); }
+  .upgrade-slot .slot-hint { font-size: 11px; color: var(--muted); text-align: center; }
+
+  .upgrader-middle { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 50px; }
+  
+  /* SPIN DIAL */
+  .dial-wrap { position: relative; width: 180px; height: 180px; }
+  .dial-svg { width: 180px; height: 180px; transform: rotate(-90deg); }
+  .dial-track { fill: none; stroke: var(--surface2); stroke-width: 18; }
+  .dial-fill-lose { fill: none; stroke: var(--red); stroke-width: 18; stroke-linecap: butt; transition: stroke-dashoffset 0.6s ease; }
+  .dial-fill-win { fill: none; stroke: var(--green); stroke-width: 18; stroke-linecap: butt; transition: stroke-dashoffset 0.6s ease; }
+  .dial-needle { position: absolute; top: 50%; left: 50%; width: 3px; height: 82px;
+    background: #fff; transform-origin: bottom center;
+    transform: translateX(-50%) translateY(-100%); border-radius: 2px;
+    box-shadow: 0 0 6px rgba(255,255,255,0.8); transition: transform 0.05s linear; }
+  .dial-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 36px; height: 36px; background: var(--surface); border: 3px solid var(--border);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; z-index: 2; }
+  .dial-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    text-align: center; pointer-events: none; z-index: 3; }
+  .dial-pct { font-size: 22px; font-weight: 800; }
+  .dial-sub { font-size: 10px; color: var(--muted); font-weight: 600; }
+
+  .mult-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .mult-btn { padding: 5px 12px; background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700;
+    transition: all 0.15s; }
+  .mult-btn:hover, .mult-btn.active { background: var(--surface3); border-color: var(--accent); color: var(--accent); }
+
+  .chance-bar-wrap { width: 100%; background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; margin: 4px 0; }
+  .chance-bar-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.4s ease; }
+
+  .upgrade-btn-wrap { display: flex; gap: 8px; width: 100%; }
+  .upgrade-btn-wrap .btn { flex: 1; padding: 12px; font-size: 14px; font-weight: 700; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+    max-width: 320px; display: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  }
+  #toast.show { display: block; animation: slideIn .2s ease; }
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .toast-rarity { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+  .toast-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .toast-sub { font-size: 12px; color: var(--muted); }
+  .toast-price { font-size: 14px; font-weight: 700; color: var(--accent); margin-top: 6px; }
+
+  /* MODAL */
+  #modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  #modal-overlay.open { opacity: 1; pointer-events: all; }
+  #modal-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px; text-align: center;
+    min-width: 290px; max-width: 380px;
+    transform: scale(.93); transition: transform .25s;
+  }
+  #modal-overlay.open #modal-box { transform: scale(1); }
+  .modal-rarity-bar { height: 4px; border-radius: 2px; margin: 0 auto 18px; width: 60px; }
+  .modal-img { width: 140px; height: 100px; object-fit: contain; margin: 0 auto 12px; display: block;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7)); }
+  .modal-rarity { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; font-weight: 700; }
+  .modal-name { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .modal-wear { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+  .modal-float { font-size: 12px; color: var(--muted); font-family: monospace; margin-bottom: 12px; }
+  .modal-price { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 20px; }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btns .btn { flex: 1; padding: 11px; }
+
+  /* FLOAT BAR */
+  .float-bar-wrap { margin: 3px 0 6px; }
+  .float-bar-bg { height: 4px; background: linear-gradient(to right, #3ecf6a, #4b8fff, #9b5fff, #d433e0, #e84848, #555); border-radius: 2px; position: relative; }
+  .float-bar-marker { position: absolute; top: -4px; width: 2px; height: 12px; background: #fff; border-radius: 1px; transform: translateX(-50%); box-shadow: 0 0 4px #fff; }
+
+  /* PICK MODAL */
+  #pick-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 300; opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  #pick-overlay.open { opacity: 1; pointer-events: all; }
+  #pick-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; width: min(640px, 95vw); max-height: 80vh;
+    overflow-y: auto; transform: scale(.95); transition: transform .2s;
+  }
+  #pick-overlay.open #pick-box { transform: scale(1); }
+  #pick-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  #pick-box .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+  /* RARITY PILL */
+  .rarity-pill {
+    display: inline-block; font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    padding: 1px 6px; border-radius: 3px; margin-bottom: 3px;
+  }
+  .rarity-pill.blue { background: rgba(75,143,255,.15); color: var(--blue); }
+  .rarity-pill.purple { background: rgba(155,95,255,.15); color: var(--purple); }
+  .rarity-pill.pink { background: rgba(212,51,224,.15); color: var(--pink); }
+  .rarity-pill.red { background: rgba(232,72,72,.15); color: var(--red); }
+  .rarity-pill.gold { background: rgba(240,192,64,.15); color: var(--gold); }
+
+  /* UPGRADER RESULT */
+  .upgrade-result { padding: 12px; border-radius: 8px; text-align: center; margin-top: 12px; font-weight: 700; font-size: 14px; }
+  .upgrade-result.win { background: rgba(62,207,106,.12); color: var(--green); border: 1px solid rgba(62,207,106,.3); }
+  .upgrade-result.lose { background: rgba(232,72,72,.12); color: var(--red); border: 1px solid rgba(232,72,72,.3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+    header { padding: 0 10px; gap: 6px; }
+    nav button { padding: 0 8px; font-size: 11px; }
+    .view { padding: 10px; }
+    .upgrader-layout { grid-template-columns: 1fr; }
+  }
+
+  /* UPGRADE ITEM SELECT */
+  .upgrade-pick-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px; cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .upgrade-pick-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .upgrade-pick-card img { width: 70px; height: 52px; object-fit: contain; display: block; margin: 0 auto 4px; }
+  .upgrade-pick-card .pc-name { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .upgrade-pick-card .pc-price { font-size: 11px; font-weight: 700; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">★ CS2SKINS</div>
+  <nav>
+    <button onclick="switchTab('market')" class="active" id="tab-market">Market</button>
+    <button onclick="switchTab('inventory')" id="tab-inventory">Inventory</button>
+    <button onclick="switchTab('cases')" id="tab-cases">Cases</button>
+    <button onclick="switchTab('upgrader')" id="tab-upgrader">Upgrader</button>
+    <button onclick="switchTab('tradeup')" id="tab-tradeup">Trade Up</button>
+    <button onclick="switchTab('terminal')" id="tab-terminal">Terminal</button>
+  </nav>
+  <div class="balance-display">💰 $<span id="balance-display">1000.00</span></div>
+</header>
+
+<!-- MARKET -->
+<div id="market" class="view active">
+  <div class="toolbar">
+    <input type="search" id="market-search" placeholder="Search skins…" oninput="renderMarket()">
+    <select id="market-rarity" onchange="renderMarket()">
+      <option value="">All Rarities</option>
+      <option value="blue">Mil-Spec (Blue)</option>
+      <option value="purple">Restricted (Purple)</option>
+      <option value="pink">Classified (Pink)</option>
+      <option value="red">Covert (Red)</option>
+      <option value="gold">Special (Gold)</option>
+    </select>
+    <select id="market-sort" onchange="renderMarket()">
+      <option value="name">Name A–Z</option>
+      <option value="price-asc">Price ↑</option>
+      <option value="price-desc">Price ↓</option>
+      <option value="rarity">Rarity</option>
+    </select>
+    <span class="result-count" id="market-count"></span>
+  </div>
+  <div class="grid" id="market-grid"></div>
+</div>
+
+<!-- INVENTORY -->
+<div id="inventory" class="view">
+  <div class="toolbar">
+    <input type="search" id="inv-search" placeholder="Search inventory…" oninput="renderInventory()">
+    <select id="inv-rarity" onchange="renderInventory()">
+      <option value="">All Rarities</option>
+      <option value="blue">Mil-Spec</option>
+      <option value="purple">Restricted</option>
+      <option value="pink">Classified</option>
+      <option value="red">Covert</option>
+      <option value="gold">Special</option>
+    </select>
+    <select id="inv-sort" onchange="renderInventory()">
+      <option value="price-desc">Value ↓</option>
+      <option value="price-asc">Value ↑</option>
+      <option value="name">Name A–Z</option>
+      <option value="float-asc">Float ↑</option>
+    </select>
+    <span class="result-count" id="inv-count"></span>
+    <button class="btn btn-ghost" onclick="sellAllInventory()" style="margin-left:auto">Sell All (75%)</button>
+  </div>
+  <div class="grid" id="inventory-grid"></div>
+</div>
+
+<!-- CASES -->
+<div id="cases" class="view">
+  <div class="case-tabs" id="case-tabs"></div>
+  <div class="case-open-area" id="case-open-area"></div>
+  <div class="section-title">Case Contents</div>
+  <div class="grid" id="case-contents-grid"></div>
+</div>
+
+<!-- UPGRADER -->
+<div id="upgrader" class="view">
+  <div class="upgrader-layout">
+    <!-- YOUR SKIN -->
+    <div class="upgrade-panel">
+      <h4>Your Skin</h4>
+      <div class="upgrade-slot" id="upgrade-input-slot" onclick="openPickModal('input')">
+        <div class="slot-hint">Click to pick a skin from your inventory</div>
+      </div>
+    </div>
+
+    <!-- MIDDLE -->
+    <div class="upgrader-middle">
+      <div class="dial-wrap" id="dial-wrap">
+        <svg class="dial-svg" viewBox="0 0 180 180">
+          <circle class="dial-track" cx="90" cy="90" r="72"/>
+          <circle class="dial-fill-lose" id="dial-lose" cx="90" cy="90" r="72" stroke-dasharray="452.4" stroke-dashoffset="0"/>
+          <circle class="dial-fill-win" id="dial-win" cx="90" cy="90" r="72" stroke-dasharray="452.4" stroke-dashoffset="452.4"/>
+        </svg>
+        <div class="dial-needle" id="dial-needle"></div>
+        <div class="dial-center">⬆</div>
+        <div class="dial-label" style="top:50%;left:50%;transform:translate(-50%,-50%)">
+          <div class="dial-pct" id="dial-pct-text">—</div>
+          <div class="dial-sub">WIN CHANCE</div>
+        </div>
+      </div>
+
+      <div class="mult-btns" id="mult-btns">
+        <button class="mult-btn" onclick="setMultiplier(2)">2×</button>
+        <button class="mult-btn" onclick="setMultiplier(5)">5×</button>
+        <button class="mult-btn active" onclick="setMultiplier(10)">10×</button>
+        <button class="mult-btn" onclick="setMultiplier(30)">30×</button>
+        <button class="mult-btn" onclick="setMultiplier(50)">50×</button>
+        <button class="mult-btn" onclick="setMultiplier(70)">70×</button>
+      </div>
+
+      <div style="width:100%;text-align:center">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Win Chance</div>
+        <div class="chance-bar-wrap"><div class="chance-bar-fill" id="chance-bar" style="width:10%"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px" id="chance-label">—</div>
+      </div>
+
+      <div class="upgrade-btn-wrap">
+        <button class="btn btn-upgrade" id="upgrade-go-btn" onclick="executeUpgrade()" disabled>⚡ Upgrade</button>
+      </div>
+      <div id="upgrade-result-area"></div>
+    </div>
+
+    <!-- TARGET SKIN -->
+    <div class="upgrade-panel">
+      <h4>Target Skin (Auto-Picked)</h4>
+      <div class="upgrade-slot" id="upgrade-output-slot">
+        <div class="slot-hint">Select your skin & multiplier</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRADE UP -->
+<div id="tradeup" class="view">
+  <div class="tu-layout">
+    <div class="tu-slots-panel">
+      <div class="section-title" style="margin-top:0">Trade Up Contract</div>
+      <div class="tu-slots" id="tu-slots"></div>
+      <div class="tu-info" id="tu-info"></div>
+      <button class="btn btn-primary tu-craft-btn" id="tu-craft-btn" onclick="executeTradeUp()" disabled>Craft (0/10)</button>
+    </div>
+    <div>
+      <div class="toolbar">
+        <input type="search" id="tu-search" placeholder="Search…" oninput="renderTradeUpUI()">
+        <select id="tu-rarity" onchange="renderTradeUpUI()">
+          <option value="">All</option>
+          <option value="blue">Blue</option>
+          <option value="purple">Purple</option>
+          <option value="pink">Pink</option>
+        </select>
+      </div>
+      <div class="grid" id="tu-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMINAL -->
+<div id="terminal" class="view">
+  <div id="terminal-select-screen">
+    <div class="case-tabs" id="terminal-tabs"></div>
+    <div class="case-open-area">
+      <h3 id="terminal-sel-name">—</h3>
+      <div class="case-price" id="terminal-sel-desc">—</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">Unseal to receive up to 5 sequential offers. Accept to buy, Decline to see the next. Decline all 5 and the Terminal self-destructs with nothing gained.</div>
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:48px;margin-bottom:10px">🔒</div>
+        <button class="btn btn-primary" style="width:auto;padding:10px 28px" id="terminal-unseal-btn" onclick="unsealTerminal()">Unseal — $<span id="terminal-sel-price">0.00</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="terminal-active" style="display:none">
+    <div class="case-open-area">
+      <h3 id="terminal-active-name">—</h3>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:10px 0 14px" id="terminal-offer-dots"></div>
+      <div id="terminal-offer-card" style="max-width:320px;margin:0 auto"></div>
+      <div id="terminal-result-area"></div>
+    </div>
+  </div>
+
+  <div id="terminal-destructed" style="display:none">
+    <div class="case-open-area" style="text-align:center;padding:30px 0">
+      <div style="font-size:48px;margin-bottom:10px">💥</div>
+      <div style="color:var(--red);font-weight:700;margin-bottom:14px">Terminal self-destructed — all 5 offers declined</div>
+      <button class="btn btn-ghost" style="width:auto;padding:8px 22px" onclick="resetTerminal()">Back to Terminals</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="toast">
+  <div class="toast-rarity" id="toast-rarity"></div>
+  <div class="toast-name" id="toast-name"></div>
+  <div class="toast-sub" id="toast-sub"></div>
+  <div class="toast-price" id="toast-price"></div>
+</div>
+
+<!-- UNBOX RESULT MODAL -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal-box">
+    <div class="modal-rarity-bar" id="modal-bar"></div>
+    <img class="modal-img" id="modal-img" src="" alt="">
+    <div class="modal-rarity" id="modal-rarity"></div>
+    <div class="modal-name" id="modal-name"></div>
+    <div class="modal-wear" id="modal-wear"></div>
+    <div class="modal-float" id="modal-float"></div>
+    <div class="modal-price" id="modal-price"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Keep</button>
+      <button class="btn btn-sell" id="modal-sell-btn">Sell (75%)</button>
+    </div>
+  </div>
+</div>
+
+<!-- PICK MODAL -->
+<div id="pick-overlay" onclick="closePickModal(event)">
+  <div id="pick-box">
+    <h3 id="pick-title">Pick a skin</h3>
+    <div class="grid" id="pick-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px,1fr))"></div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// STATE
+// =========================================================
+let balance = 1000;  // <---- if u want to change ur money, change this number
+let inventory = [];
+let tradeUpSelection = [];
+let activeCaseIdx = 0;
+let isSpin = false;
+let toastTimer;
+let priceFluctuations = {}; // name -> multiplier
+let priceChangeDir = {};    // name -> 'up'|'down'
+let upgradeInputItem = null;
+let upgradeOutputItem = null;
+let upgradeMultiplier = 10;
+let pickModalTarget = null; // 'input'
+
+// =========================================================
+// SKIN IMAGE MAPPING (CS.MONEY CDN / community sources)
+// We'll use pattern-based URLs from the community skin viewer
+// =========================================================
+const SKIN_IMAGES = {
+  // AWP
+  "AWP | Dragon Lore": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/310776902/200fx150f",
+  "AWP | Asiimov": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327300/200fx150f",
+  "AWP | Wildfire": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/880564956/200fx150f",
+  "AWP | Gungnir": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3169496096/200fx150f",
+  "AWP | Medusa": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725667/200fx150f",
+  "AWP | Lightning Strike": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827901/200fx150f",
+  "AWP | Hyper Beast": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/720060119/200fx150f",
+  "AWP | PAW": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2867088119/200fx150f",
+  "AWP | Chromatic Aberration": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218019/200fx150f",
+  "AWP | Duality": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356701/200fx150f",
+  "AWP | Exoskeleton": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987261/200fx150f",
+  "AWP | Snakebite": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725710671/200fx150f",
+  // AK-47
+  "AK-47 | Case Hardened": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827560/200fx150f",
+  "AK-47 | Redline": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/344843756/200fx150f",
+  "AK-47 | Fire Serpent": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/279756004/200fx150f",
+  "AK-47 | Bloodsport": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3523405420/200fx150f",
+  "AK-47 | Asiimov": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521652/200fx150f",
+  "AK-47 | Neon Rider": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218466/200fx150f",
+  "AK-47 | Neon Revolution": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2547426988/200fx150f",
+  "AK-47 | Ice Coaled": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218014/200fx150f",
+  "AK-47 | Nightwish": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4558673613/200fx150f",
+  "AK-47 | Inheritance": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356626/200fx150f",
+  "AK-47 | Cartel": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2737496406/200fx150f",
+  "AK-47 | Rat Rod": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2850842948/200fx150f",
+  "AK-47 | Safari Mesh": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827590/200fx150f",
+  "AK-47 | Legion of Anubis": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987217/200fx150f",
+  // M4A4
+  "M4A4 | Howl": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/373257004/200fx150f",
+  "M4A4 | The Emperor": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2867088034/200fx150f",
+  "M4A4 | Neo-Noir": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218482/200fx150f",
+  "M4A4 | Temukau": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356751/200fx150f",
+  "M4A4 | Desolate Space": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2547426921/200fx150f",
+  "M4A4 | In Living Color": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725710631/200fx150f",
+  "M4A4 | Cyber Security": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987179/200fx150f",
+  "M4A4 | Hellfire": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521646/200fx150f",
+  // M4A1-S
+  "M4A1-S | Printstream": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987245/200fx150f",
+  "M4A1-S | Hyper Beast": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725607/200fx150f",
+  "M4A1-S | Player Two": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218497/200fx150f",
+  "M4A1-S | Guardian": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2737496364/200fx150f",
+  "M4A1-S | Night Terror": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4558673641/200fx150f",
+  "M4A1-S | Emphorosaur-S": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356656/200fx150f",
+  // USP-S
+  "USP-S | Printstream": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987200/200fx150f",
+  "USP-S | Kill Confirmed": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725642/200fx150f",
+  "USP-S | Neo-Noir": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218488/200fx150f",
+  "USP-S | Monster Mashup": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218491/200fx150f",
+  "USP-S | Ticket to Hell": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4558673646/200fx150f",
+  "USP-S | Cortex": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521667/200fx150f",
+  "USP-S | Jawbreaker": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356661/200fx150f",
+  // Desert Eagle
+  "Desert Eagle | Blaze": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827561/200fx150f",
+  "Desert Eagle | Printstream": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987161/200fx150f",
+  "Desert Eagle | Golden Koi": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987221/200fx150f",
+  "Desert Eagle | Code Red": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521677/200fx150f",
+  "Desert Eagle | Kumicho Dragon": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2547426855/200fx150f",
+  "Desert Eagle | Trigger Discipline": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725710618/200fx150f",
+  "Desert Eagle | Emerald Jörmungandr": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987172/200fx150f",
+  // Knives
+  "★ Karambit | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469330524/200fx150f",
+  "★ Karambit | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827855/200fx150f",
+  "★ Karambit | Case Hardened": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827876/200fx150f",
+  "★ Karambit | Lore": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725817/200fx150f",
+  "★ Butterfly Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1101897884/200fx150f",
+  "★ Butterfly Knife | Lore": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1101897890/200fx150f",
+  "★ M9 Bayonet | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469330375/200fx150f",
+  "★ M9 Bayonet | Lore": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725776/200fx150f",
+  "★ Bayonet | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327875/200fx150f",
+  "★ Flip Knife | Marble Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327892/200fx150f",
+  "★ Gut Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327979/200fx150f",
+  "★ Navaja Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2648661682/200fx150f",
+  "★ Ursus Knife | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2694655609/200fx150f",
+  "★ Skeleton Knife | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152229022/200fx150f",
+  "★ Talon Knife | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2694655627/200fx150f",
+  "★ Paracord Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152228976/200fx150f",
+  "★ Nomad Knife | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152228999/200fx150f",
+  "★ Survival Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152229007/200fx150f",
+  "★ Classic Knife | Doppler": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725699551/200fx150f",
+  // Gloves
+  "★ Sport Gloves | Pandora's Box": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1101920769/200fx150f",
+  "★ Sport Gloves | Scarlet Shamagh": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/1101920757/200fx150f",
+  "★ Moto Gloves | Finish Line": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218123/200fx150f",
+  "★ Specialist Gloves | Field Agent": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218117/200fx150f",
+  "★ Driver Gloves | Crimson Weave": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152229059/200fx150f",
+  "★ Hand Wraps | Cobalt Skulls": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152229039/200fx150f",
+  "★ Hydra Gloves | Case Hardened": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725699597/200fx150f",
+  "★ Broken Fang Gloves | Unhinged": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218129/200fx150f",
+  "★ Broken Fang Gloves | Jade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725699591/200fx150f",
+  // Glock
+  "Glock-18 | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827705/200fx150f",
+  "Glock-18 | Water Elemental": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327050/200fx150f",
+  "Glock-18 | Vogue": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987135/200fx150f",
+  "Glock-18 | Wasteland Rebel": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521678/200fx150f",
+  "Glock-18 | Sacrifice": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2737496480/200fx150f",
+  "Glock-18 | Umbral Rabbit": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356631/200fx150f",
+  "Glock-18 | Snack Attack": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4558673616/200fx150f",
+  // P250
+  "P250 | Sand Dune": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827534/200fx150f",
+  "P250 | See Ya Later": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218455/200fx150f",
+  "P250 | Visions": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218013/200fx150f",
+  "P250 | Nuclear Threat": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/2547426826/200fx150f",
+  // Misc
+  "MP5-SD | Liquidation": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218021/200fx150f",
+  "MAC-10 | Neon Rider": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3152218441/200fx150f",
+  "MAC-10 | Sakkaku": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356666/200fx150f",
+  "UMP-45 | Fade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3561987255/200fx150f",
+  "Five-SeveN | Hyper Beast": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/696725699/200fx150f",
+  "Five-SeveN | Nightshade": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4285218016/200fx150f",
+  "Five-SeveN | Dreams & Nightmares": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4558673595/200fx150f",
+  "SG 553 | Cyrex": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469327159/200fx150f",
+  "SG 553 | Cyberforce": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4617356696/200fx150f",
+  "AUG | Akihabara Accept": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/344843839/200fx150f",
+  "AUG | Flame Jörmungandr": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3725710614/200fx150f",
+  "FAMAS | Djinn": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/4000521660/200fx150f",
+  "Galil AR | Chatterbox": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/3523405394/200fx150f",
+};
+
+// Fallback placeholder using weapon type
+const WEAPON_PLACEHOLDERS = {
+  "AWP": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/344843839/200fx150f",
+  "AK-47": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/175827534/200fx150f",
+  "★": "https://steamcommunity-a.akamaihd.net/economy/image/class/730/469330524/200fx150f",
+};
+
+function getSkinImg(name) {
+  if (SKIN_IMAGES[name]) return SKIN_IMAGES[name];
+  // Try prefix match
+  for (const [k,v] of Object.entries(SKIN_IMAGES)) {
+    if (name.startsWith(k.split('|')[0].trim())) return v;
+  }
+  // Generate a color-coded placeholder via a canvas data URL approach
+  return null;
+}
+
+function imgEl(name, rarity, style='') {
+  const src = getSkinImg(name);
+  if (src) {
+    return `<img src="${src}" alt="${name}" style="${style}" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')">`;
+  }
+  // Fallback colored box
+  const c = {blue:'#4b8fff',purple:'#9b5fff',pink:'#d433e0',red:'#e84848',gold:'#f0c040'}[rarity]||'#aaa';
+  const letter = name.startsWith('★') ? '★' : name[0];
+  return `<div style="width:90px;height:68px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:${c};text-shadow:0 0 12px ${c};${style}">${letter}</div>`;
+}
+
+// =========================================================
+// RARITY
+// =========================================================
+const rarityLabel = { blue:"Mil-Spec", purple:"Restricted", pink:"Classified", red:"Covert", gold:"Special" };
+const rarityOrder = { blue:0, purple:1, pink:2, red:3, gold:4 };
+const rarityColors = { blue:"#4b8fff", purple:"#9b5fff", pink:"#d433e0", red:"#e84848", gold:"#f0c040" };
+
+function generateFloat() { return parseFloat((Math.random()).toFixed(4)); }
+function getWear(f) {
+  if (f<0.07) return "Factory New";
+  if (f<0.15) return "Minimal Wear";
+  if (f<0.38) return "Field-Tested";
+  if (f<0.45) return "Well-Worn";
+  return "Battle-Scarred";
+}
+function generateInstance(base) {
+  const f = generateFloat();
+  return { ...base, instanceId: Math.random().toString(36).slice(2,10), float: f, wear: getWear(f) };
+}
+// FIX: this previously did `base * m` where `base` is the whole item OBJECT, not
+// its price — multiplying an object by a number is NaN. That's what caused the
+// "NaN" prices in the inventory, case-open modal, trade-up results, and upgrader.
+function floatPrice(base, float) {
+  const m = float<0.07?1.5:float<0.15?1.15:float<0.38?0.9:float<0.45?0.65:0.45;
+  return base.basePrice * m * (priceFluctuations[base.name||'?'] || 1);
+}
+function livePrice(item) {
+  return item.basePrice * (priceFluctuations[item.name] || 1);
+}
+
+// =========================================================
+// HUGE SKIN DATABASE
+// =========================================================
+const caseDatabase = [
+  {
+    name: "Recoil Case",
+    price: 2.50,
+    items: [
+      { name:"Galil AR | Destroyer", rarity:"blue", basePrice:0.55 },
+      { name:"M249 | Downtown", rarity:"blue", basePrice:0.65 },
+      { name:"MAC-10 | Monkeyflage", rarity:"blue", basePrice:0.60 },
+      { name:"P250 | Re.built", rarity:"blue", basePrice:0.55 },
+      { name:"Nova | Plume", rarity:"blue", basePrice:0.60 },
+      { name:"P250 | Visions", rarity:"purple", basePrice:4.50 },
+      { name:"Dual Berettas | Flora Carnivora", rarity:"purple", basePrice:3.00 },
+      { name:"Five-SeveN | Nightshade", rarity:"purple", basePrice:5.00 },
+      { name:"SG 553 | Dragon Tech", rarity:"purple", basePrice:3.50 },
+      { name:"AK-47 | Ice Coaled", rarity:"pink", basePrice:22.00 },
+      { name:"MP5-SD | Liquidation", rarity:"pink", basePrice:12.00 },
+      { name:"SCAR-20 | Fragments", rarity:"pink", basePrice:10.00 },
+      { name:"USP-S | Printstream", rarity:"red", basePrice:120.00 },
+      { name:"AWP | Chromatic Aberration", rarity:"red", basePrice:55.00 },
+      { name:"★ Moto Gloves | Finish Line", rarity:"gold", basePrice:480.00 },
+      { name:"★ Specialist Gloves | Field Agent", rarity:"gold", basePrice:380.00 },
+    ]
+  },
+  {
+    name: "Revolution Case",
+    price: 2.50,
+    items: [
+      { name:"Glock-18 | Umbral Rabbit", rarity:"blue", basePrice:0.60 },
+      { name:"MP9 | Featherweight", rarity:"blue", basePrice:0.55 },
+      { name:"AUG | Plague", rarity:"blue", basePrice:0.60 },
+      { name:"CZ75-Auto | Emerald Quartz", rarity:"purple", basePrice:3.00 },
+      { name:"USP-S | Jawbreaker", rarity:"purple", basePrice:5.50 },
+      { name:"AK-47 | Inheritance", rarity:"purple", basePrice:6.00 },
+      { name:"M4A1-S | Emphorosaur-S", rarity:"purple", basePrice:4.00 },
+      { name:"SG 553 | Cyberforce", rarity:"pink", basePrice:14.00 },
+      { name:"MAC-10 | Sakkaku", rarity:"pink", basePrice:18.00 },
+      { name:"Desert Eagle | Printstream", rarity:"pink", basePrice:35.00 },
+      { name:"AWP | Duality", rarity:"red", basePrice:70.00 },
+      { name:"M4A4 | Temukau", rarity:"red", basePrice:55.00 },
+      { name:"★ Butterfly Knife | Doppler", rarity:"gold", basePrice:2000.00 },
+      { name:"★ Karambit | Case Hardened", rarity:"gold", basePrice:1200.00 },
+    ]
+  },
+  {
+    name: "Dreams & Nightmares",
+    price: 1.00,
+    items: [
+      { name:"SCAR-20 | Poultrygeist", rarity:"blue", basePrice:0.35 },
+      { name:"P2000 | Lifted Spirits", rarity:"blue", basePrice:0.40 },
+      { name:"UMP-45 | Wild Child", rarity:"blue", basePrice:0.45 },
+      { name:"Glock-18 | Snack Attack", rarity:"purple", basePrice:5.00 },
+      { name:"M4A1-S | Night Terror", rarity:"purple", basePrice:6.50 },
+      { name:"Five-SeveN | Dreams & Nightmares", rarity:"purple", basePrice:4.00 },
+      { name:"Dual Berettas | Melondrama", rarity:"pink", basePrice:12.00 },
+      { name:"MP9 | Starlight Protector", rarity:"pink", basePrice:18.00 },
+      { name:"MP5-SD | Necrodancer", rarity:"pink", basePrice:15.00 },
+      { name:"AK-47 | Nightwish", rarity:"red", basePrice:90.00 },
+      { name:"USP-S | Ticket to Hell", rarity:"red", basePrice:65.00 },
+      { name:"★ Butterfly Knife | Lore", rarity:"gold", basePrice:1600.00 },
+      { name:"★ Karambit | Lore", rarity:"gold", basePrice:1800.00 },
+    ]
+  },
+  {
+    name: "Fracture Case",
+    price: 2.00,
+    items: [
+      { name:"Desert Eagle | Emerald Jörmungandr", rarity:"blue", basePrice:0.70 },
+      { name:"Galil AR | Connexion", rarity:"blue", basePrice:0.60 },
+      { name:"PP-Bizon | Space Cat", rarity:"blue", basePrice:1.10 },
+      { name:"P250 | Contaminant", rarity:"purple", basePrice:4.00 },
+      { name:"M4A4 | Cyber Security", rarity:"purple", basePrice:7.00 },
+      { name:"AK-47 | Legion of Anubis", rarity:"purple", basePrice:5.50 },
+      { name:"CZ75-Auto | Distressed", rarity:"pink", basePrice:11.00 },
+      { name:"UMP-45 | Fade", rarity:"pink", basePrice:22.00 },
+      { name:"AWP | Exoskeleton", rarity:"pink", basePrice:18.00 },
+      { name:"Desert Eagle | Golden Koi", rarity:"red", basePrice:45.00 },
+      { name:"M4A1-S | Printstream", rarity:"red", basePrice:150.00 },
+      { name:"★ Broken Fang Gloves | Unhinged", rarity:"gold", basePrice:340.00 },
+      { name:"★ Sport Gloves | Scarlet Shamagh", rarity:"gold", basePrice:280.00 },
+    ]
+  },
+  {
+    name: "Snakebite Case",
+    price: 1.50,
+    items: [
+      { name:"Five-SeveN | Scrawl", rarity:"blue", basePrice:0.50 },
+      { name:"Negev | Dazzle", rarity:"blue", basePrice:0.45 },
+      { name:"MP5-SD | Etch Lord", rarity:"purple", basePrice:6.00 },
+      { name:"CZ75-Auto | Vendetta", rarity:"purple", basePrice:5.00 },
+      { name:"MAC-10 | Allure", rarity:"purple", basePrice:4.00 },
+      { name:"P250 | Contaminant", rarity:"pink", basePrice:9.00 },
+      { name:"AUG | Flame Jörmungandr", rarity:"pink", basePrice:14.00 },
+      { name:"M4A4 | In Living Color", rarity:"pink", basePrice:20.00 },
+      { name:"Desert Eagle | Trigger Discipline", rarity:"red", basePrice:35.00 },
+      { name:"AWP | Snakebite", rarity:"red", basePrice:50.00 },
+      { name:"★ Hydra Gloves | Case Hardened", rarity:"gold", basePrice:310.00 },
+      { name:"★ Broken Fang Gloves | Jade", rarity:"gold", basePrice:290.00 },
+    ]
+  },
+  {
+    name: "Clutch Case",
+    price: 3.00,
+    items: [
+      { name:"PP-Bizon | Judgement of Anubis", rarity:"blue", basePrice:1.20 },
+      { name:"Nova | Wood Fired", rarity:"blue", basePrice:0.55 },
+      { name:"SG 553 | Phantom", rarity:"blue", basePrice:0.65 },
+      { name:"MP7 | Powercore", rarity:"purple", basePrice:4.50 },
+      { name:"M4A4 | Buzzkill", rarity:"purple", basePrice:8.00 },
+      { name:"Glock-18 | Wasteland Rebel", rarity:"purple", basePrice:5.50 },
+      { name:"USP-S | Neo-Noir", rarity:"pink", basePrice:25.00 },
+      { name:"P250 | See Ya Later", rarity:"pink", basePrice:12.00 },
+      { name:"SSG 08 | Fever Dream", rarity:"pink", basePrice:9.00 },
+      { name:"M4A4 | Neo-Noir", rarity:"red", basePrice:65.00 },
+      { name:"AK-47 | Neon Rider", rarity:"red", basePrice:80.00 },
+      { name:"★ Driver Gloves | Crimson Weave", rarity:"gold", basePrice:380.00 },
+      { name:"★ Hand Wraps | Cobalt Skulls", rarity:"gold", basePrice:550.00 },
+    ]
+  },
+  {
+    name: "Spectrum 2 Case",
+    price: 2.00,
+    items: [
+      { name:"Tec-9 | Decimator", rarity:"blue", basePrice:0.70 },
+      { name:"XM1014 | Black Tie", rarity:"blue", basePrice:0.55 },
+      { name:"USP-S | Cortex", rarity:"purple", basePrice:9.00 },
+      { name:"Galil AR | Sugar Rush", rarity:"purple", basePrice:3.50 },
+      { name:"FAMAS | Djinn", rarity:"pink", basePrice:18.00 },
+      { name:"Tec-9 | Fuel Injector", rarity:"pink", basePrice:14.00 },
+      { name:"AK-47 | Bloodsport", rarity:"red", basePrice:55.00 },
+      { name:"Desert Eagle | Code Red", rarity:"red", basePrice:35.00 },
+      { name:"★ M9 Bayonet | Doppler", rarity:"gold", basePrice:800.00 },
+      { name:"★ Talon Knife | Fade", rarity:"gold", basePrice:1100.00 },
+    ]
+  },
+  {
+    name: "CS20 Case",
+    price: 2.50,
+    items: [
+      { name:"PP-Bizon | Space Cat", rarity:"blue", basePrice:0.80 },
+      { name:"UMP-45 | Plastique", rarity:"blue", basePrice:0.70 },
+      { name:"M4A4 | Evil Daimyo", rarity:"purple", basePrice:5.50 },
+      { name:"AWP | Wildfire", rarity:"purple", basePrice:8.00 },
+      { name:"AK-47 | Rat Rod", rarity:"purple", basePrice:4.50 },
+      { name:"Glock-18 | Sacrifice", rarity:"pink", basePrice:22.00 },
+      { name:"MP5-SD | Lab Rats", rarity:"pink", basePrice:16.00 },
+      { name:"M4A1-S | Guardian", rarity:"red", basePrice:40.00 },
+      { name:"AK-47 | Cartel", rarity:"red", basePrice:30.00 },
+      { name:"★ Navaja Knife | Doppler", rarity:"gold", basePrice:350.00 },
+      { name:"★ Ursus Knife | Fade", rarity:"gold", basePrice:700.00 },
+    ]
+  },
+  {
+    name: "Horizon Case",
+    price: 3.50,
+    items: [
+      { name:"Nova | Hyper Beast", rarity:"blue", basePrice:0.80 },
+      { name:"FAMAS | Crypsis", rarity:"blue", basePrice:0.70 },
+      { name:"P2000 | Ocean Foam", rarity:"blue", basePrice:1.20 },
+      { name:"MP5-SD | Phosphor", rarity:"purple", basePrice:6.00 },
+      { name:"FAMAS | Eye of Athena", rarity:"purple", basePrice:4.00 },
+      { name:"CZ75-Auto | Circaetus", rarity:"pink", basePrice:10.00 },
+      { name:"AWP | PAW", rarity:"pink", basePrice:22.00 },
+      { name:"AK-47 | Neon Revolution", rarity:"red", basePrice:40.00 },
+      { name:"M4A4 | The Emperor", rarity:"red", basePrice:50.00 },
+      { name:"★ Karambit | Doppler", rarity:"gold", basePrice:1500.00 },
+      { name:"★ M9 Bayonet | Lore", rarity:"gold", basePrice:900.00 },
+    ]
+  },
+  {
+    name: "Danger Zone Case",
+    price: 2.50,
+    items: [
+      { name:"M249 | Warbird", rarity:"blue", basePrice:0.65 },
+      { name:"PP-Bizon | High Roller", rarity:"purple", basePrice:4.50 },
+      { name:"AK-47 | Asiimov", rarity:"purple", basePrice:10.00 },
+      { name:"M4A4 | Hellfire", rarity:"pink", basePrice:14.00 },
+      { name:"AWP | Wildfire", rarity:"pink", basePrice:20.00 },
+      { name:"AK-47 | Asiimov", rarity:"red", basePrice:75.00 },
+      { name:"★ Nomad Knife | Fade", rarity:"gold", basePrice:750.00 },
+      { name:"★ Survival Knife | Doppler", rarity:"gold", basePrice:450.00 },
+    ]
+  },
+];
+
+// EXTRA MARKET-ONLY SKINS (iconic skins that can only be bought)
+// CS2's real Sealed Terminal containers (replaced the case+key model in the
+// Show Off update). Each terminal has its own skin lineup and unseal price.
+const terminalDatabase = [
+  {
+    id: "genesis",
+    name: "Sealed Genesis Terminal",
+    price: 4.50,
+    desc: "The first Sealed Terminal, introduced with the Genesis Collection.",
+    items: [
+      { name:"P2000 | Red Wing", rarity:"blue", basePrice:1.20 },
+      { name:"MAG-7 | MAGnitude", rarity:"blue", basePrice:0.85 },
+      { name:"MP7 | Smoking Kills", rarity:"blue", basePrice:1.50 },
+      { name:"Nova | Wild Six", rarity:"blue", basePrice:0.65 },
+      { name:"Tec-9 | Brother", rarity:"blue", basePrice:0.70 },
+      { name:"P90 | Off World", rarity:"blue", basePrice:0.90 },
+      { name:"Negev | Loner", rarity:"blue", basePrice:0.55 },
+      { name:"Dual Berettas | Angel Eyes", rarity:"purple", basePrice:5.50 },
+      { name:"Glock-18 | Mirror Mosaic", rarity:"purple", basePrice:8.00 },
+      { name:"SG 553 | Dragon Tech", rarity:"purple", basePrice:4.50 },
+      { name:"UMP-45 | Briefing", rarity:"purple", basePrice:3.80 },
+      { name:"AUG | Trigger Discipline", rarity:"purple", basePrice:6.20 },
+      { name:"M4A1-S | Liquidation", rarity:"pink", basePrice:32.00 },
+      { name:"MAC-10 | Cat Fight", rarity:"pink", basePrice:20.00 },
+      { name:"AWP | Ice Coaled", rarity:"red", basePrice:90.00 },
+      { name:"M4A4 | Full Throttle", rarity:"red", basePrice:140.00 },
+      { name:"AK-47 | The Oligarch", rarity:"red", basePrice:175.00 },
+    ]
+  },
+  {
+    id: "deadhand",
+    name: "Sealed Dead Hand Terminal",
+    price: 6.50,
+    desc: "Japanese-influenced Dead Hand Collection, the second Sealed Terminal — first new gloves since Broken Fang.",
+    items: [
+      { name:"P250 | Iron Clad", rarity:"blue", basePrice:1.10 },
+      { name:"Five-SeveN | Scrawl", rarity:"blue", basePrice:0.95 },
+      { name:"MP9 | Starlight Pilgrim", rarity:"blue", basePrice:1.40 },
+      { name:"CZ75-Auto | Static Shock", rarity:"blue", basePrice:0.80 },
+      { name:"Sawed-Off | Kill Confirmed", rarity:"blue", basePrice:0.70 },
+      { name:"R8 Revolver | Junk Yard", rarity:"purple", basePrice:6.00 },
+      { name:"SSG 08 | Bloodshot", rarity:"purple", basePrice:4.20 },
+      { name:"FAMAS | Roll Cage", rarity:"purple", basePrice:5.10 },
+      { name:"Galil AR | Crimson Tsunami", rarity:"purple", basePrice:7.30 },
+      { name:"USP-S | Ember", rarity:"pink", basePrice:28.00 },
+      { name:"M4A1-S | Nightmare", rarity:"pink", basePrice:45.00 },
+      { name:"Desert Eagle | Oxide Blaze", rarity:"pink", basePrice:38.00 },
+      { name:"AK-47 | Wasteland Rebel", rarity:"red", basePrice:95.00 },
+      { name:"AWP | Soulflower", rarity:"red", basePrice:160.00 },
+      { name:"★ Driver Gloves | Dead Hand", rarity:"gold", basePrice:420.00 },
+      { name:"★ Hand Wraps | Dead Hand", rarity:"gold", basePrice:380.00 },
+      { name:"★ Moto Gloves | Dead Hand", rarity:"gold", basePrice:450.00 },
+    ]
+  },
+];
+
+const extraMarketSkins = [
+  // Dragon Lore collection
+  { name:"AWP | Dragon Lore", rarity:"gold", basePrice:8500.00 },
+  { name:"AWP | Gungnir", rarity:"gold", basePrice:6000.00 },
+  { name:"AWP | Medusa", rarity:"gold", basePrice:1200.00 },
+  { name:"AWP | Lightning Strike", rarity:"gold", basePrice:250.00 },
+  { name:"AWP | Asiimov", rarity:"red", basePrice:75.00 },
+  { name:"AWP | Hyper Beast", rarity:"red", basePrice:55.00 },
+  // Howl / fire serpent
+  { name:"M4A4 | Howl", rarity:"gold", basePrice:3500.00 },
+  { name:"AK-47 | Fire Serpent", rarity:"gold", basePrice:1800.00 },
+  { name:"AK-47 | Case Hardened", rarity:"purple", basePrice:28.00 },
+  { name:"AK-47 | Redline", rarity:"purple", basePrice:12.00 },
+  { name:"AK-47 | Safari Mesh", rarity:"blue", basePrice:0.35 },
+  // Desert Eagle
+  { name:"Desert Eagle | Blaze", rarity:"gold", basePrice:750.00 },
+  // USP
+  { name:"USP-S | Kill Confirmed", rarity:"red", basePrice:38.00 },
+  { name:"USP-S | Neo-Noir", rarity:"pink", basePrice:25.00 },
+  // Glocks
+  { name:"Glock-18 | Fade", rarity:"pink", basePrice:280.00 },
+  { name:"Glock-18 | Water Elemental", rarity:"blue", basePrice:2.50 },
+  // Five-Seven
+  { name:"Five-SeveN | Hyper Beast", rarity:"pink", basePrice:22.00 },
+  // Safari collection
+  { name:"M4A4 | Safari Mesh", rarity:"blue", basePrice:0.35 },
+  { name:"Glock-18 | Sand Dune", rarity:"blue", basePrice:0.20 },
+  { name:"P250 | Sand Dune", rarity:"blue", basePrice:0.20 },
+  { name:"MP9 | Sand Dune", rarity:"blue", basePrice:0.20 },
+  { name:"UMP-45 | Sand Dune", rarity:"blue", basePrice:0.18 },
+  { name:"Nova | Sand Dune", rarity:"blue", basePrice:0.18 },
+  { name:"Tec-9 | Sand Dune", rarity:"blue", basePrice:0.18 },
+  // M4A1-S
+  { name:"M4A1-S | Hyper Beast", rarity:"red", basePrice:28.00 },
+  // AUG
+  { name:"AUG | Akihabara Accept", rarity:"pink", basePrice:80.00 },
+  { name:"SG 553 | Cyrex", rarity:"pink", basePrice:45.00 },
+  // Knives extra
+  { name:"★ Karambit | Fade", rarity:"gold", basePrice:1400.00 },
+  { name:"★ Bayonet | Doppler", rarity:"gold", basePrice:400.00 },
+  { name:"★ Classic Knife | Doppler", rarity:"gold", basePrice:600.00 },
+  { name:"★ Sport Gloves | Pandora's Box", rarity:"gold", basePrice:950.00 },
+  // Galil
+  { name:"Galil AR | Chatterbox", rarity:"pink", basePrice:18.00 },
+  { name:"Mac-10 | Neon Rider", rarity:"pink", basePrice:25.00 },
+];
+
+// Build unified market
+const allItemsMap = new Map();
+caseDatabase.forEach(c => c.items.forEach(item => {
+  if (!allItemsMap.has(item.name)) allItemsMap.set(item.name, item);
+}));
+terminalDatabase.forEach(t => t.items.forEach(item => {
+  if (!allItemsMap.has(item.name)) allItemsMap.set(item.name, item);
+}));
+extraMarketSkins.forEach(item => {
+  if (!allItemsMap.has(item.name)) allItemsMap.set(item.name, item);
+});
+const allItems = [...allItemsMap.values()].sort((a,b)=>a.name.localeCompare(b.name));
+
+// Init price fluctuations
+allItems.forEach(item => { priceFluctuations[item.name] = 1.0; priceChangeDir[item.name] = null; });
+
+// =========================================================
+// PRICE FLUCTUATION ENGINE
+// =========================================================
+function tickPrices() {
+  allItems.forEach(item => {
+    const drift = (Math.random()-0.5) * 0.06;
+    let newMult = (priceFluctuations[item.name] || 1) + drift;
+    // Clamp
+    newMult = Math.max(0.4, Math.min(2.5, newMult));
+    const prev = priceFluctuations[item.name] || 1;
+    priceChangeDir[item.name] = newMult > prev ? 'up' : newMult < prev ? 'down' : null;
+    priceFluctuations[item.name] = newMult;
+  });
+  // FIX: previously called renderMarket() here, which rebuilds the entire grid's
+  // innerHTML (including every <img> tag) on each tick, forcing all images to
+  // reload/flicker. Now we just patch the price + arrow text in place.
+  if (document.getElementById('market').classList.contains('active')) updateMarketPrices();
+}
+// FIX: slowed down from 4000ms so prices change a little less often.
+setInterval(tickPrices, 7000);
+
+// =========================================================
+// BALANCE
+// =========================================================
+function updateBalance() {
+  document.getElementById('balance-display').textContent = balance.toFixed(2);
+}
+
+// =========================================================
+// TOAST
+// =========================================================
+let toastEl, toastTimeout;
+function showToast(item, action) {
+  const t = document.getElementById('toast');
+  const col = rarityColors[item.rarity] || '#aaa';
+  document.getElementById('toast-rarity').style.color = col;
+  document.getElementById('toast-rarity').textContent = rarityLabel[item.rarity] || '';
+  document.getElementById('toast-name').textContent = item.name;
+  document.getElementById('toast-sub').textContent = item.wear ? `${item.wear} | ${typeof item.float==='number'?item.float.toFixed(4):''}` : '';
+  document.getElementById('toast-price').textContent = action;
+  t.className = 'show';
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.className = '', 3200);
+}
+
+// =========================================================
+// MODAL
+// =========================================================
+function openModal(item, onSell) {
+  const col = rarityColors[item.rarity];
+  document.getElementById('modal-bar').style.background = col;
+  const src = getSkinImg(item.name);
+  const imgElModal = document.getElementById('modal-img');
+  if (src) { imgElModal.src = src; imgElModal.style.display='block'; }
+  else { imgElModal.style.display='none'; }
+  document.getElementById('modal-rarity').style.color = col;
+  document.getElementById('modal-rarity').textContent = rarityLabel[item.rarity] || '';
+  document.getElementById('modal-name').textContent = item.name;
+  document.getElementById('modal-wear').textContent = item.wear || '';
+  document.getElementById('modal-float').textContent = `Float: ${typeof item.float==='number'?item.float.toFixed(4):''}`;
+  const val = floatPrice(item, item.float);
+  document.getElementById('modal-price').textContent = `~$${val.toFixed(2)}`;
+  document.getElementById('modal-sell-btn').onclick = () => { if (onSell) onSell(); closeModal(); };
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// =========================================================
+// TABS
+// =========================================================
+function switchTab(id) {
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if (id==='market') renderMarket();
+  if (id==='inventory') renderInventory();
+  if (id==='cases') renderCasesView();
+  if (id==='tradeup') renderTradeUpUI();
+  if (id==='upgrader') renderUpgrader();
+  if (id==='terminal') renderTerminal();
+}
+
+// =========================================================
+// CARD HELPERS
+// =========================================================
+function floatBar(f) {
+  const pct = (f*100).toFixed(1);
+  return `<div class="float-bar-wrap"><div class="float-bar-bg"><div class="float-bar-marker" style="left:${pct}%"></div></div></div>`;
+}
+
+function marketCard(item) {
+  const lp = livePrice(item);
+  const dir = priceChangeDir[item.name];
+  const arrow = dir==='up' ? '▲' : dir==='down' ? '▼' : '—';
+  const arrowClass = dir || '';
+  const img = getSkinImg(item.name);
+  // FIX: added data-name so price ticks can find & patch this exact card
+  // without re-rendering (and re-loading) the image.
+  return `
+  <div class="item-card ${item.rarity}" data-name="${item.name.replace(/"/g,'&quot;')}">
+    <div class="rarity-bar"></div>
+    <div class="card-img">
+      ${img ? `<img src="${img}" alt="${item.name}" onerror="this.parentElement.innerHTML='<span style=font-size:30px;opacity:.4>?</span>'">` : `<span style="font-size:30px;opacity:.4;color:${rarityColors[item.rarity]}">★</span>`}
+    </div>
+    <div class="card-body">
+      <div class="rarity-name">${rarityLabel[item.rarity]}</div>
+      <h4>${item.name}</h4>
+      <div class="price-row">
+        <span class="price" data-price>$${lp.toFixed(2)}</span>
+        <span class="price-change ${arrowClass}" data-arrow>${arrow}</span>
+      </div>
+      <button class="btn btn-primary" style="margin-top:7px" onclick="buyItem('${item.name.replace(/'/g,"\\'")}')">Buy</button>
+    </div>
+  </div>`;
+}
+
+// FIX: new helper — patches just the price text + arrow on each existing
+// market card in place, instead of rebuilding the whole grid (which was
+// causing every skin image to reload on each price tick).
+function updateMarketPrices() {
+  const grid = document.getElementById('market-grid');
+  if (!grid) return;
+  grid.querySelectorAll('.item-card').forEach(card => {
+    const name = card.getAttribute('data-name');
+    const item = allItemsMap.get(name);
+    if (!item) return;
+    const lp = livePrice(item);
+    const dir = priceChangeDir[item.name];
+    const arrow = dir==='up' ? '▲' : dir==='down' ? '▼' : '—';
+    const priceEl = card.querySelector('[data-price]');
+    const arrowEl = card.querySelector('[data-arrow]');
+    if (priceEl) priceEl.textContent = `$${lp.toFixed(2)}`;
+    if (arrowEl) { arrowEl.textContent = arrow; arrowEl.className = `price-change ${dir||''}`; }
+  });
+}
+
+function invCard(item) {
+  const val = floatPrice(item, item.float);
+  const sellPrice = (val * 0.75).toFixed(2);
+  const img = getSkinImg(item.name);
+  return `
+  <div class="item-card ${item.rarity}">
+    <div class="rarity-bar"></div>
+    <div class="card-img">
+      ${img ? `<img src="${img}" alt="${item.name}">` : `<span style="font-size:28px;opacity:.4;color:${rarityColors[item.rarity]}">★</span>`}
+    </div>
+    <div class="card-body">
+      <div class="rarity-pill ${item.rarity}">${rarityLabel[item.rarity]}</div>
+      <h4>${item.name}</h4>
+      <div class="wear-tag">${item.wear}</div>
+      <div class="float-tag">${item.float.toFixed(4)}</div>
+      ${floatBar(item.float)}
+      <div class="price">~$${val.toFixed(2)}</div>
+      <button class="btn btn-sell" style="margin-top:7px" onclick="sellItem('${item.instanceId}',${sellPrice})">Sell $${sellPrice}</button>
+    </div>
+  </div>`;
+}
+
+// =========================================================
+// MARKET
+// =========================================================
+function renderMarket() {
+  const q = document.getElementById('market-search').value.toLowerCase();
+  const r = document.getElementById('market-rarity').value;
+  const s = document.getElementById('market-sort').value;
+  let items = allItems.filter(i=>(!q||i.name.toLowerCase().includes(q))&&(!r||i.rarity===r));
+  const lp = i => livePrice(i);
+  if (s==='price-asc') items.sort((a,b)=>lp(a)-lp(b));
+  else if (s==='price-desc') items.sort((a,b)=>lp(b)-lp(a));
+  else if (s==='rarity') items.sort((a,b)=>rarityOrder[b.rarity]-rarityOrder[a.rarity]);
+  else items.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('market-count').textContent = `${items.length} skins`;
+  document.getElementById('market-grid').innerHTML = items.map(marketCard).join('');
+}
+
+function buyItem(name) {
+  const base = allItemsMap.get(name);
+  if (!base) return;
+  const price = livePrice(base);
+  if (balance < price) { showToast({name:'Not enough balance!', rarity:'red'}, ''); return; }
+  balance -= price;
+  const inst = generateInstance(base);
+  inventory.push(inst);
+  updateBalance();
+  showToast(inst, `Bought for $${price.toFixed(2)}`);
+}
+
+// =========================================================
+// INVENTORY
+// =========================================================
+function renderInventory() {
+  const q = document.getElementById('inv-search').value.toLowerCase();
+  const r = document.getElementById('inv-rarity').value;
+  const s = document.getElementById('inv-sort').value;
+  let items = inventory.filter(i=>(!q||i.name.toLowerCase().includes(q))&&(!r||i.rarity===r));
+  const getVal = i => floatPrice(i, i.float);
+  if (s==='price-asc') items.sort((a,b)=>getVal(a)-getVal(b));
+  else if (s==='price-desc') items.sort((a,b)=>getVal(b)-getVal(a));
+  else if (s==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
+  else if (s==='float-asc') items.sort((a,b)=>a.float-b.float);
+  document.getElementById('inv-count').textContent = `${items.length} items`;
+  document.getElementById('inventory-grid').innerHTML = items.length
+    ? items.map(invCard).join('')
+    : '<p style="color:var(--muted);grid-column:1/-1;padding:30px 0;text-align:center">Your inventory is empty. Buy from the market or open cases.</p>';
+}
+
+function sellItem(instanceId, price) {
+  const idx = inventory.findIndex(i=>i.instanceId===instanceId);
+  if (idx===-1) return;
+  balance += parseFloat(price);
+  const sold = inventory.splice(idx,1)[0];
+  updateBalance();
+  showToast(sold, `Sold for $${price}`);
+  renderInventory();
+  if (document.getElementById('upgrader').classList.contains('active')) renderUpgrader();
+  if (document.getElementById('tradeup').classList.contains('active')) renderTradeUpUI();
+}
+
+function sellAllInventory() {
+  if (!inventory.length) return;
+  let total = 0;
+  inventory.forEach(i=>total+=floatPrice(i,i.float)*0.75);
+  balance += total;
+  inventory = [];
+  updateBalance();
+  showToast({name:'All items sold', rarity:'purple'}, `+$${total.toFixed(2)}`);
+  renderInventory();
+}
+
+// =========================================================
+// CASES
+// =========================================================
+function renderCasesView() {
+  const tabs = document.getElementById('case-tabs');
+  tabs.innerHTML = caseDatabase.map((c,i)=>
+    `<button class="case-tab ${i===activeCaseIdx?'active':''}" onclick="selectCase(${i})">${c.name}</button>`
+  ).join('');
+  renderCaseOpenArea();
+  renderCaseContents();
+}
+
+function selectCase(idx) {
+  activeCaseIdx = idx;
+  document.querySelectorAll('.case-tab').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  renderCaseOpenArea();
+  renderCaseContents();
+}
+
+function renderCaseOpenArea() {
+  const c = caseDatabase[activeCaseIdx];
+  document.getElementById('case-open-area').innerHTML = `
+    <h3>${c.name}</h3>
+    <div class="case-price">$${c.price.toFixed(2)} per spin</div>
+    <div class="spinner-wrap">
+      <div class="spinner-needle"></div>
+      <div class="spinner-track" id="spinner-track"></div>
+    </div>
+    <div class="open-btns">
+      <button class="btn btn-primary" id="spin-btn" onclick="spinCase(false)">🎲 Open Case ($${c.price.toFixed(2)})</button>
+      <button class="btn btn-ghost" id="fast-spin-btn" onclick="spinCase(true)">⚡ Fast Open</button>
+    </div>
+  `;
+}
+
+function renderCaseContents() {
+  const c = caseDatabase[activeCaseIdx];
+  const grid = document.getElementById('case-contents-grid');
+  grid.innerHTML = c.items.map(item => {
+    const img = getSkinImg(item.name);
+    return `<div class="item-card ${item.rarity}">
+      <div class="rarity-bar"></div>
+      <div class="card-img">${img?`<img src="${item.img||img}" alt="${item.name}">`:`<span style="font-size:28px;opacity:.4;color:${rarityColors[item.rarity]}">★</span>`}</div>
+      <div class="card-body">
+        <div class="rarity-name">${rarityLabel[item.rarity]}</div>
+        <h4>${item.name}</h4>
+        <div class="price">~$${item.basePrice.toFixed(2)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pickItemFromCase(c) {
+  const rand = Math.random();
+  let rarity = 'blue';
+  if (rand>0.7995) rarity='purple';
+  if (rand>0.946) rarity='pink';
+  if (rand>0.991) rarity='red';
+  if (rand>0.9985) rarity='gold';
+  const pool = c.items.filter(x=>x.rarity===rarity);
+  return pool.length ? pool[Math.floor(Math.random()*pool.length)] : c.items[0];
+}
+
+function spinCase(fast) {
+  const c = caseDatabase[activeCaseIdx];
+  if (isSpin) return;
+  if (balance < c.price) { showToast({name:'Not enough balance!', rarity:'red'}, ''); return; }
+  balance -= c.price;
+  updateBalance();
+  isSpin = true;
+  const spinBtn = document.getElementById('spin-btn');
+  const fastBtn = document.getElementById('fast-spin-btn');
+  if (spinBtn) spinBtn.disabled = true;
+  if (fastBtn) fastBtn.disabled = true;
+
+  const winnerBase = pickItemFromCase(c);
+  const winnerInstance = generateInstance(winnerBase);
+
+  const finalize = () => {
+    isSpin = false;
+    if (spinBtn) spinBtn.disabled = false;
+    if (fastBtn) fastBtn.disabled = false;
+    inventory.push(winnerInstance);
+    openModal(winnerInstance, () => {
+      const val = floatPrice(winnerInstance, winnerInstance.float);
+      const sell = (val*0.75).toFixed(2);
+      const idx = inventory.findIndex(i=>i.instanceId===winnerInstance.instanceId);
+      if (idx>-1) { balance+=parseFloat(sell); inventory.splice(idx,1); updateBalance(); }
+    });
+  };
+
+  if (fast) { finalize(); return; }
+
+  const track = document.getElementById('spinner-track');
+  if (!track) { finalize(); return; }
+  track.innerHTML = '';
+  track.style.transition = 'none';
+  track.style.transform = 'translateX(0)';
+
+  const itemW = 140;
+  const count = 60;
+  const items = [];
+  for (let i=0;i<count;i++) items.push(i===54 ? winnerBase : pickItemFromCase(c));
+
+  track.innerHTML = items.map(item => {
+    const img = getSkinImg(item.name);
+    return `<div class="spinner-item ${item.rarity}">
+      ${img?`<img src="${img}" alt="${item.name}">`:`<span style="font-size:22px;color:${rarityColors[item.rarity]}">★</span>`}
+      <div>${item.name.split('|')[1]?.trim()||item.name}</div>
+    </div>`;
+  }).join('');
+
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      const wrapW = document.querySelector('.spinner-wrap')?.offsetWidth || 600;
+      const offset = (54*itemW) - (wrapW/2) + (itemW/2) + (Math.random()-0.5)*70;
+      track.style.transition = 'transform 4s cubic-bezier(0.12,0.8,0.12,1)';
+      track.style.transform = `translateX(-${offset}px)`;
+    });
+  });
+
+  setTimeout(finalize, 4300);
+}
+
+// =========================================================
+// UPGRADER
+// =========================================================
+function renderUpgrader() {
+  updateUpgraderSlots();
+}
+
+function setMultiplier(m) {
+  upgradeMultiplier = m;
+  document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mult-btn').forEach(b=>{ if (b.textContent===m+'×') b.classList.add('active'); });
+  updateUpgraderSlots();
+}
+
+function updateUpgraderSlots() {
+  const inputSlot = document.getElementById('upgrade-input-slot');
+  const outputSlot = document.getElementById('upgrade-output-slot');
+  const goBtn = document.getElementById('upgrade-go-btn');
+
+  if (!inputSlot) return;
+
+  if (upgradeInputItem) {
+    const val = floatPrice(upgradeInputItem, upgradeInputItem.float);
+    const img = getSkinImg(upgradeInputItem.name);
+    inputSlot.className = `upgrade-slot has-item ${upgradeInputItem.rarity}`;
+    inputSlot.innerHTML = `
+      ${img?`<img src="${img}" alt="${upgradeInputItem.name}">`:''}
+      <div class="slot-name">${upgradeInputItem.name}</div>
+      <div class="slot-price">$${val.toFixed(2)}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px">${upgradeInputItem.wear} · ${upgradeInputItem.float.toFixed(4)}</div>
+      <div style="font-size:10px;color:var(--accent);margin-top:5px;cursor:pointer" onclick="upgradeInputItem=null;updateUpgraderSlots()">✕ Remove</div>
+    `;
+
+    // Calculate target value
+    const inputVal = floatPrice(upgradeInputItem, upgradeInputItem.float);
+    const targetVal = inputVal * upgradeMultiplier;
+    const winChance = (1/upgradeMultiplier)*100;
+
+    // Find closest target item
+    const candidatePool = [...allItemsMap.values()].filter(i=>i.basePrice>0);
+    candidatePool.sort((a,b)=>Math.abs(a.basePrice-targetVal)-Math.abs(b.basePrice-targetVal));
+    upgradeOutputItem = candidatePool[0] || null;
+
+    // Update dial
+    const circ = 2*Math.PI*72; // 452.4
+    const winFrac = winChance/100;
+    const loseFrac = 1-winFrac;
+    document.getElementById('dial-pct-text').textContent = winChance.toFixed(1)+'%';
+    // FIX 2: dial-lose and dial-win are two full circles drawn on top of each
+    // other, each using stroke-dasharray=circumference so that
+    // stroke-dashoffset reveals a partial arc starting from the same 0°
+    // point. The old code revealed loseFrac of the lose circle AND winFrac
+    // of the win circle, both starting at 0° — so they overlapped instead of
+    // sitting back-to-back, leaving the remaining stretch of the ring as
+    // bare gray track (the "3rd color"). The fix: keep dial-lose revealing
+    // the full ring (offset 0, it's the base layer), and have dial-win
+    // (drawn on top) reveal only its own winFrac portion starting at 0°,
+    // which then visually covers exactly winFrac of the red, leaving
+    // loseFrac of red visible behind it. No gray ever shows since dial-lose
+    // always covers 100% of the ring.
+    document.getElementById('dial-lose').style.strokeDashoffset = 0;
+    document.getElementById('dial-win').style.strokeDashoffset = circ*(1-winFrac);
+    document.getElementById('chance-bar').style.width = winChance+'%';
+    document.getElementById('chance-label').textContent = `${winChance.toFixed(2)}% win · $${targetVal.toFixed(2)} target`;
+
+    // Animate needle to win zone boundary
+    const winAngleDeg = winFrac * 360;
+    document.getElementById('dial-needle').style.transform = `translateX(-50%) translateY(-100%) rotate(${winAngleDeg}deg)`;
+
+    // Output slot
+    if (upgradeOutputItem) {
+      const outImg = getSkinImg(upgradeOutputItem.name);
+      outputSlot.className = `upgrade-slot has-item ${upgradeOutputItem.rarity}`;
+      outputSlot.innerHTML = `
+        ${outImg?`<img src="${outImg}" alt="${upgradeOutputItem.name}">`:''}
+        <div class="slot-name">${upgradeOutputItem.name}</div>
+        <div class="slot-price">~$${upgradeOutputItem.basePrice.toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${rarityLabel[upgradeOutputItem.rarity]}</div>
+      `;
+    }
+
+    goBtn.disabled = false;
+    goBtn.textContent = `⚡ Upgrade (${winChance.toFixed(1)}% chance)`;
+  } else {
+    inputSlot.className = 'upgrade-slot';
+    inputSlot.onclick = () => openPickModal('input');
+    inputSlot.innerHTML = `<div class="slot-hint">Click to pick a skin from your inventory</div>`;
+    outputSlot.className = 'upgrade-slot';
+    outputSlot.innerHTML = `<div class="slot-hint">Select your skin & multiplier</div>`;
+    document.getElementById('dial-pct-text').textContent = '—';
+    document.getElementById('dial-lose').style.strokeDashoffset = 0;
+    document.getElementById('dial-win').style.strokeDashoffset = 452.4;
+    document.getElementById('chance-bar').style.width = '0%';
+    document.getElementById('chance-label').textContent = '—';
+    document.getElementById('dial-needle').style.transform = 'translateX(-50%) translateY(-100%) rotate(0deg)';
+    goBtn.disabled = true;
+    goBtn.textContent = '⚡ Upgrade';
+  }
+}
+
+// Spin needle animation
+let needleSpinInterval = null;
+// FIX 1: the needle used to always land inside the green "win" arc no matter
+// what, because finalAngle was computed purely from winChance. The actual
+// win/loss was decided separately via its own Math.random() call in
+// executeUpgrade, so the needle's landing spot had nothing to do with the
+// real result. Now spinNeedle takes the already-decided `won` boolean and
+// picks a landing angle inside the matching zone (green arc if won, red arc
+// if lost), so what you see is always consistent with the outcome.
+function spinNeedle(duration, winChance, won, callback) {
+  const totalFrames = duration / 16;
+  let frame = 0;
+  const winAngle = (winChance/100)*360;
+  const spins = 4; // 4 full rotations
+  // Land inside the win (green) zone if won, inside the lose (red) zone otherwise.
+  const zoneAngle = won
+    ? Math.random()*winAngle                              // somewhere in [0, winAngle) = green
+    : winAngle + Math.random()*(360-winAngle);             // somewhere in [winAngle, 360) = red
+  const finalAngle = spins*360 + zoneAngle; // rolled once, not every frame
+  needleSpinInterval = setInterval(()=>{
+    frame++;
+    const progress = Math.min(frame/totalFrames, 1);
+    const eased = 1 - Math.pow(1-progress, 3);
+    const current = finalAngle * eased;
+    document.getElementById('dial-needle').style.transform = `translateX(-50%) translateY(-100%) rotate(${current}deg)`;
+    if (frame>=totalFrames) {
+      clearInterval(needleSpinInterval);
+      callback();
+    }
+  }, 16);
+}
+
+let isUpgrading = false;
+function executeUpgrade() {
+  if (!upgradeInputItem || isUpgrading) return;
+  const inputVal = floatPrice(upgradeInputItem, upgradeInputItem.float);
+  const winChance = (1/upgradeMultiplier)*100;
+  const won = Math.random()*100 < winChance;
+
+  isUpgrading = true;
+  document.getElementById('upgrade-go-btn').disabled = true;
+  document.getElementById('upgrade-result-area').innerHTML = '';
+
+  // Remove input from inventory
+  const idx = inventory.findIndex(i=>i.instanceId===upgradeInputItem.instanceId);
+  if (idx>-1) inventory.splice(idx,1);
+
+  spinNeedle(2500, winChance, won, () => {
+    isUpgrading = false;
+    document.getElementById('upgrade-go-btn').disabled = false;
+
+    if (won && upgradeOutputItem) {
+      const winInstance = generateInstance(upgradeOutputItem);
+      inventory.push(winInstance);
+      updateBalance();
+      document.getElementById('upgrade-result-area').innerHTML = `<div class="upgrade-result win">🎉 You won ${upgradeOutputItem.name}!</div>`;
+      setTimeout(()=>{
+        upgradeInputItem = null;
+        updateUpgraderSlots();
+      }, 1500);
+      showToast(winInstance, `Won upgrade! +$${floatPrice(winInstance,winInstance.float).toFixed(2)}`);
+    } else {
+      document.getElementById('upgrade-result-area').innerHTML = `<div class="upgrade-result lose">💀 You lost $${inputVal.toFixed(2)}</div>`;
+      showToast({name:'Upgrade Failed', rarity:'red'}, `-$${inputVal.toFixed(2)}`);
+      upgradeInputItem = null;
+      updateUpgraderSlots();
+    }
+  });
+}
+
+// =========================================================
+// PICK MODAL
+// =========================================================
+function openPickModal(target) {
+  pickModalTarget = target;
+  document.getElementById('pick-title').textContent = 'Select skin from inventory';
+  const eligible = inventory.filter(i => !tradeUpSelection.find(t=>t.instanceId===i.instanceId));
+  const grid = document.getElementById('pick-grid');
+  if (!eligible.length) {
+    grid.innerHTML = '<p style="color:var(--muted);padding:20px">No skins in inventory. Buy some from the Market!</p>';
+  } else {
+    grid.innerHTML = eligible.map(item=>{
+      const img = getSkinImg(item.name);
+      const val = floatPrice(item, item.float);
+      return `<div class="upgrade-pick-card ${item.rarity}" onclick="pickSkin('${item.instanceId}')">
+        ${img?`<img src="${img}" alt="${item.name}">`:`<div style="height:52px;display:flex;align-items:center;justify-content:center;font-size:24px;color:${rarityColors[item.rarity]}">★</div>`}
+        <div class="pc-name">${item.name}</div>
+        <div style="font-size:9px;color:var(--muted)">${item.wear}</div>
+        <div class="pc-price">$${val.toFixed(2)}</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('pick-overlay').classList.add('open');
+}
+
+function closePickModal(e) {
+  if (e && e.target !== document.getElementById('pick-overlay')) return;
+  document.getElementById('pick-overlay').classList.remove('open');
+}
+
+function pickSkin(instanceId) {
+  const item = inventory.find(i=>i.instanceId===instanceId);
+  if (!item) return;
+  document.getElementById('pick-overlay').classList.remove('open');
+  if (pickModalTarget==='input') {
+    upgradeInputItem = item;
+    updateUpgraderSlots();
+  }
+}
+
+// =========================================================
+// TRADE UP
+// =========================================================
+function renderTradeUpUI() {
+  const slotsEl = document.getElementById('tu-slots');
+  slotsEl.innerHTML = '';
+  for (let i=0;i<10;i++) {
+    const item = tradeUpSelection[i];
+    if (item) {
+      const img = getSkinImg(item.name);
+      slotsEl.innerHTML += `<div class="tu-slot filled ${item.rarity}" onclick="removeFromTradeUp(${i})">
+        ${img?`<img src="${img}" alt="${item.name}" style="width:40px;height:30px;object-fit:contain">`:''}
+        <div style="font-size:9px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis">${item.name.split('|')[1]?.trim()||item.name}</div>
+        <div style="font-size:9px">${item.float.toFixed(4)}</div>
+      </div>`;
+    } else {
+      slotsEl.innerHTML += `<div class="tu-slot"><div style="font-size:18px;opacity:.4">+</div><div>Empty</div></div>`;
+    }
+  }
+  const n = tradeUpSelection.length;
+  const avgFloat = n>0 ? (tradeUpSelection.reduce((s,i)=>s+i.float,0)/n).toFixed(4) : '—';
+  const rarities = [...new Set(tradeUpSelection.map(i=>i.rarity))];
+  const nextRarity = rarities.length===1 ? getNextRarity(rarities[0]) : null;
+  document.getElementById('tu-info').innerHTML = `
+    Items: <span>${n}/10</span><br>
+    Avg Float: <span>${avgFloat}</span><br>
+    Output Rarity: <span>${nextRarity ? rarityLabel[nextRarity]||'—' : '—'}</span>
+  `;
+  const btn = document.getElementById('tu-craft-btn');
+  const ready = n===10 && rarities.length===1 && rarities[0]!=='gold';
+  btn.disabled = !ready;
+  btn.textContent = ready ? `Craft → ${rarityLabel[getNextRarity(rarities[0])]||'?'}` : `Craft (${n}/10)`;
+
+  const q = document.getElementById('tu-search').value.toLowerCase();
+  const r = document.getElementById('tu-rarity').value;
+  const available = inventory.filter(i=>
+    i.rarity!=='gold' && i.rarity!=='red' &&
+    !tradeUpSelection.find(t=>t.instanceId===i.instanceId) &&
+    (!q||i.name.toLowerCase().includes(q)) &&
+    (!r||i.rarity===r)
+  );
+  document.getElementById('tu-grid').innerHTML = available.length
+    ? available.map(item=>{
+        const img = getSkinImg(item.name);
+        return `<div class="item-card ${item.rarity}" onclick="addToTradeUp('${item.instanceId}')">
+          <div class="rarity-bar"></div>
+          <div class="card-img">${img?`<img src="${img}" alt="${item.name}">`:`<span style="font-size:24px;opacity:.4;color:${rarityColors[item.rarity]}">★</span>`}</div>
+          <div class="card-body">
+            <div class="rarity-pill ${item.rarity}">${rarityLabel[item.rarity]}</div>
+            <h4>${item.name}</h4>
+            <div class="wear-tag">${item.wear}</div>
+            <div class="float-tag">${item.float.toFixed(4)}</div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<p style="color:var(--muted);grid-column:1/-1;padding:24px 0;text-align:center">No eligible items. Buy blue, purple, or pink skins.</p>';
+}
+
+function getNextRarity(r) {
+  return {blue:'purple',purple:'pink',pink:'red',red:'gold'}[r]||null;
+}
+
+function addToTradeUp(instanceId) {
+  if (tradeUpSelection.length>=10) return;
+  const item = inventory.find(i=>i.instanceId===instanceId);
+  if (!item) return;
+  if (tradeUpSelection.length>0 && tradeUpSelection[0].rarity!==item.rarity) {
+    showToast({name:'All items must be same rarity!', rarity:'red'}, '');
+    return;
+  }
+  tradeUpSelection.push(item);
+  renderTradeUpUI();
+}
+
+function removeFromTradeUp(idx) {
+  tradeUpSelection.splice(idx,1);
+  renderTradeUpUI();
+}
+
+function executeTradeUp() {
+  if (tradeUpSelection.length!==10) return;
+  const inputRarity = tradeUpSelection[0].rarity;
+  const outputRarity = getNextRarity(inputRarity);
+  if (!outputRarity) return;
+  const avgFloat = tradeUpSelection.reduce((s,i)=>s+i.float,0)/10;
+  tradeUpSelection.forEach(sel=>{
+    const idx = inventory.findIndex(i=>i.instanceId===sel.instanceId);
+    if (idx>-1) inventory.splice(idx,1);
+  });
+  const pool = allItems.filter(i=>i.rarity===outputRarity);
+  const winnerBase = pool[Math.floor(Math.random()*pool.length)];
+  const winnerInstance = { ...winnerBase, instanceId:Math.random().toString(36).slice(2,10), float:parseFloat(avgFloat.toFixed(4)), wear:getWear(avgFloat) };
+  inventory.push(winnerInstance);
+  tradeUpSelection = [];
+  openModal(winnerInstance, ()=>{
+    const val = floatPrice(winnerInstance, winnerInstance.float);
+    const sell = (val*0.75).toFixed(2);
+    const idx = inventory.findIndex(i=>i.instanceId===winnerInstance.instanceId);
+    if (idx>-1) { balance+=parseFloat(sell); inventory.splice(idx,1); updateBalance(); }
+  });
+  renderTradeUpUI();
+}
+
+// =========================================================
+// TERMINAL
+// (modeled on CS2's real "Sealed Terminal" containers: unsealing — a
+// paid action — gives up to 5 sequential offers, each a specific skin
+// at a fixed price. Accept to buy it, or decline to see the next offer.
+// Decline the 5th offer and the terminal self-destructs, removed with
+// nothing gained. Accepted items get an "Original Owner" flag, mirroring
+// the real item's Original Owner Certificate. There are 2 terminal types,
+// each with its own price and skin lineup, defined in terminalDatabase.)
+// =========================================================
+const TERMINAL_MAX_OFFERS = 5;
+let terminalState = 'select'; // 'select' | 'active' | 'destructed'
+let selectedTerminalId = terminalDatabase[0].id;
+let terminalOfferIndex = 0;   // 0-based index of current offer
+let terminalOffers = [];      // pre-rolled instances for this terminal
+let terminalDeclined = 0;
+
+function currentTerminal() {
+  return terminalDatabase.find(t => t.id === selectedTerminalId);
+}
+
+function rollTerminalOffer() {
+  const t = currentTerminal();
+  // Weighted toward lower rarities like a real container, with a small
+  // chance at higher tiers — pulls only from this terminal's own lineup.
+  const weights = { blue: 0.55, purple: 0.27, pink: 0.13, red: 0.045, gold: 0.005 };
+  const roll = Math.random();
+  let acc = 0, chosenRarity = 'blue';
+  for (const [r, w] of Object.entries(weights)) {
+    acc += w;
+    if (roll <= acc) { chosenRarity = r; break; }
+  }
+  let pool = t.items.filter(i => i.rarity === chosenRarity);
+  if (!pool.length) pool = t.items;
+  const base = allItemsMap.get(pool[Math.floor(Math.random() * pool.length)].name);
+  return generateInstance(base);
+}
+
+function selectTerminal(id) {
+  selectedTerminalId = id;
+  renderTerminal();
+}
+
+function renderTerminal() {
+  document.getElementById('terminal-select-screen').style.display = terminalState === 'select' ? '' : 'none';
+  document.getElementById('terminal-active').style.display = terminalState === 'active' ? '' : 'none';
+  document.getElementById('terminal-destructed').style.display = terminalState === 'destructed' ? '' : 'none';
+
+  if (terminalState === 'select') {
+    const tabs = document.getElementById('terminal-tabs');
+    tabs.innerHTML = terminalDatabase.map(t =>
+      `<div class="case-tab ${t.id===selectedTerminalId?'active':''}" onclick="selectTerminal('${t.id}')">${t.name}</div>`
+    ).join('');
+    const t = currentTerminal();
+    document.getElementById('terminal-sel-name').textContent = t.name;
+    document.getElementById('terminal-sel-desc').textContent = t.desc;
+    document.getElementById('terminal-sel-price').textContent = t.price.toFixed(2);
+    document.getElementById('terminal-unseal-btn').disabled = balance < t.price;
+  }
+  if (terminalState === 'active') {
+    document.getElementById('terminal-active-name').textContent = currentTerminal().name;
+    renderTerminalOffer();
+  }
+}
+
+function unsealTerminal() {
+  const t = currentTerminal();
+  if (balance < t.price) {
+    showToast({name:'Cannot afford Terminal', rarity:'red'}, `Need $${t.price.toFixed(2)}`);
+    return;
+  }
+  balance -= t.price;
+  updateBalance();
+  terminalState = 'active';
+  terminalOfferIndex = 0;
+  terminalDeclined = 0;
+  terminalOffers = [rollTerminalOffer()];
+  renderTerminal();
+}
+
+function renderTerminalOffer() {
+  const dots = document.getElementById('terminal-offer-dots');
+  dots.innerHTML = Array.from({length: TERMINAL_MAX_OFFERS}, (_, i) => {
+    let state = i < terminalOfferIndex ? 'declined' : i === terminalOfferIndex ? 'current' : 'pending';
+    const bg = state === 'declined' ? 'var(--red)' : state === 'current' ? 'var(--accent)' : 'var(--surface3)';
+    return `<div style="width:9px;height:9px;border-radius:50%;background:${bg}"></div>`;
+  }).join('');
+
+  const item = terminalOffers[terminalOfferIndex];
+  const img = getSkinImg(item.name);
+  const price = floatPrice(item, item.float);
+  const col = rarityColors[item.rarity];
+
+  document.getElementById('terminal-offer-card').innerHTML = `
+    <div class="item-card ${item.rarity}" style="cursor:default">
+      <div class="rarity-bar"></div>
+      <div class="card-img" style="height:140px">${img?`<img src="${img}" alt="${item.name}">`:`<span style="font-size:36px;opacity:.4;color:${col}">★</span>`}</div>
+      <div class="card-body">
+        <div class="rarity-pill ${item.rarity}">${rarityLabel[item.rarity]}</div>
+        <h4 style="font-size:14px">${item.name}</h4>
+        <div class="wear-tag">${item.wear}</div>
+        <div class="float-tag">Float: ${item.float.toFixed(4)}</div>
+        <div class="price-row"><span class="price" style="font-size:18px">$${price.toFixed(2)}</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-sell" style="flex:1" onclick="declineTerminalOffer()">Decline (${terminalOfferIndex+1}/${TERMINAL_MAX_OFFERS})</button>
+      <button class="btn btn-upgrade" style="flex:1" onclick="acceptTerminalOffer()" ${balance<price?'disabled':''}>Accept · $${price.toFixed(2)}</button>
+    </div>
+  `;
+  document.getElementById('terminal-result-area').innerHTML = '';
+}
+
+function acceptTerminalOffer() {
+  const item = terminalOffers[terminalOfferIndex];
+  const price = floatPrice(item, item.float);
+  if (balance < price) {
+    showToast({name:'Cannot afford this offer', rarity:'red'}, `Need $${price.toFixed(2)}`);
+    return;
+  }
+  balance -= price;
+  const purchased = { ...item, originalOwner: true };
+  inventory.push(purchased);
+  updateBalance();
+  document.getElementById('terminal-result-area').innerHTML =
+    `<div class="upgrade-result win">✅ Purchased ${item.name} — Original Owner Certificate attached</div>`;
+  showToast(purchased, `Bought for $${price.toFixed(2)}`);
+  setTimeout(() => {
+    terminalState = 'select';
+    renderTerminal();
+  }, 1600);
+}
+
+function declineTerminalOffer() {
+  terminalDeclined++;
+  if (terminalDeclined >= TERMINAL_MAX_OFFERS) {
+    terminalState = 'destructed';
+    renderTerminal();
+    return;
+  }
+  terminalOfferIndex++;
+  terminalOffers.push(rollTerminalOffer());
+  renderTerminalOffer();
+}
+
+function resetTerminal() {
+  terminalState = 'select';
+  renderTerminal();
+}
+
+// =========================================================
+// INIT
+// =========================================================
+renderMarket();
+updateBalance();
+renderCasesView();
+renderUpgrader();
+
+</script>
+</body>
+</html>

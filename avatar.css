@@ -1,0 +1,264 @@
+/* Styles only for the new elements on avatar.html.
+   style.css is untouched — this fills in the avatar preview panel,
+   category tabs, and item grid. */
+
+.avatar-editor {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* --- LEFT: preview panel --- */
+.avatar-preview-panel {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--card-bg, #1f2124);
+    border-radius: 10px;
+    padding: 18px;
+    position: sticky;
+    top: 20px;
+    /* Override the generic "section > div > div" flex rule in style.css,
+       which would otherwise make this panel's children sit side-by-side. */
+    display: block;
+    margin-bottom: 0;
+}
+
+.avatar-preview-stage {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 8px;
+    background: linear-gradient(160deg, #26282c, #1a1c1f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.avatar-preview-stage img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #3a3c3f;
+}
+
+.avatar-preview-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.avatar-preview-actions button {
+    background-color: #ffffff;
+    color: #101113;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.avatar-preview-actions button.secondary {
+    background-color: transparent;
+    color: #f1f1f1;
+    border: 1px solid var(--border-col, #2a2c2f);
+}
+
+.avatar-equipped {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-col, #2a2c2f);
+}
+
+.avatar-equipped h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #9a9a9a;
+    margin: 0 0 8px 0;
+}
+
+.avatar-equipped ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.avatar-equipped li {
+    font-size: 13px;
+    color: #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.avatar-equipped li span.slot-label {
+    color: #8a8d91;
+}
+
+.avatar-equipped li.is-empty span.slot-value {
+    color: #6f7175;
+}
+
+/* --- RIGHT: tabs + item grid --- */
+.avatar-items-panel {
+    flex-grow: 1;
+    min-width: 0;
+    /* Same override as .avatar-preview-panel — keeps #avatarTabs and
+       #avatarItemsGrid stacked instead of becoming flex siblings. */
+    display: block;
+    margin-bottom: 0;
+}
+
+.avatar-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-col, #2a2c2f);
+    padding-bottom: 14px;
+}
+
+.avatar-tab {
+    background: none;
+    border: 1px solid var(--border-col, #2a2c2f);
+    color: #f1f1f1;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.avatar-tab:hover {
+    background-color: #232528;
+}
+
+.avatar-tab.active {
+    background-color: #ffffff;
+    color: #101113;
+    border-color: #ffffff;
+}
+
+.avatar-items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.avatar-item {
+    position: relative;
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.avatar-item:hover {
+    transform: translateY(-2px);
+    background-color: #202226;
+}
+
+.avatar-item .avatar-item-thumb {
+    width: 128px;
+    height: 128px;
+    border-radius: 8px;
+    background-color: #3a3c3f;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-item .avatar-item-thumb--empty {
+    width: 128px;
+    height: 128px;
+    border-radius: 8px;
+    background-color: #1f2124;
+    border: 1px dashed #4a4d51;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #8a8d91;
+}
+
+.avatar-item h4 {
+    font-size: 13px;
+    margin: 10px 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.avatar-item p {
+    font-size: 11px;
+    color: #9a9a9a;
+    margin: 0;
+}
+
+/* Selected / equipped state */
+.avatar-item.is-selected {
+    border-color: var(--accent-red, #e2241b);
+    background-color: #241a1a;
+}
+
+.avatar-item .equipped-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--accent-red, #e2241b);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.avatar-item.is-selected .equipped-check {
+    display: flex;
+}
+
+.avatar-items-empty {
+    color: #8a8d91;
+    font-size: 13px;
+    padding: 30px 10px;
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .avatar-editor {
+        flex-direction: column;
+    }
+
+    .avatar-preview-panel {
+        width: 100%;
+        position: static;
+    }
+
+    .avatar-item,
+    .avatar-item .avatar-item-thumb,
+    .avatar-item .avatar-item-thumb--empty {
+        width: 110px;
+        height: 110px;
+    }
+}

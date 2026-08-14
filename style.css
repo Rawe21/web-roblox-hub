@@ -1,0 +1,752 @@
+/* --- BASE BASIC STYLES --- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #15171a;
+    color: #f1f1f1;
+    margin: 0;
+}
+
+a {
+    color: inherit;
+}
+
+/* --- HEADER FIXES --- */
+header {
+    background-color: #0e0f11;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 25px;
+    border-bottom: 1px solid #2a2c2f;
+}
+
+/* Left side group */
+header > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Drop your own logo image (e.g. logo.png) next to index.html and this sizes it to fit */
+header .site-logo {
+    height: 43px;
+    width: auto;
+    display: block;
+}
+
+header nav {
+    display: flex;
+    gap: 15px;
+    margin-left: 10px;
+}
+
+header nav a {
+    text-decoration: none;
+    color: #f1f1f1;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Center search box */
+header input {
+    padding: 8px 12px;
+    border: 1px solid #34363a;
+    border-radius: 6px;
+    width: 320px;
+    background-color: #1f2124;
+    color: #f1f1f1;
+    outline: none;
+}
+
+header input::placeholder {
+    color: #8a8d91;
+}
+
+/* Right side icons/profile box */
+header > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Internal header profile wrapper */
+header > div:last-child > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+header img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #3a3c3f;
+    object-fit: cover;
+}
+
+header button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Notification bell / Robux icon buttons — swap notification.png and robux.png
+   for your own images, they'll be sized to match automatically */
+.icon-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background-color: #232528;
+}
+
+.icon-btn .header-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 0;
+    background-color: transparent;
+    object-fit: contain;
+}
+
+.robux-btn {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* --- MAIN PAGE LAYOUT --- */
+main {
+    display: flex;
+}
+
+/* --- SIDEBAR --- */
+aside {
+    width: 170px;
+    padding: 20px 15px;
+    background-color: #15171a;
+}
+
+aside > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-left: 8px;
+}
+
+aside img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #3a3c3f;
+}
+
+aside ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+aside li {
+    margin-bottom: 4px;
+}
+
+aside a {
+    text-decoration: none;
+    color: #f1f1f1;
+    font-size: 14px;
+    display: block;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+aside li:not(:first-child) a:hover {
+    background-color: #232528;
+}
+
+/* Active nav item — reflects the current page via .active class */
+aside li a.active {
+    background-color: #2a2c2f;
+    font-weight: bold;
+}
+
+aside b {
+    background-color: #3a3c3f;
+    color: #f1f1f1;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 11px;
+    float: right;
+    font-weight: normal;
+}
+
+aside button {
+    background-color: #ffffff;
+    color: #101113;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 13px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+/* --- CONTENT SPACING --- */
+section {
+    padding: 25px 40px;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+section h1 {
+    font-size: 28px;
+    margin: 0 0 25px 0;
+}
+
+section h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+section h2 a {
+    float: right;
+    font-size: 13px;
+    text-decoration: none;
+    color: #9a9a9a;
+    font-weight: normal;
+    margin-top: 4px;
+}
+
+/* Rows for friends and game cards */
+section > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-bottom: 40px;
+}
+
+/* --- FRIENDS --- */
+.friend-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 10px;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.friend-tile:hover {
+    transform: translateY(-2px);
+    background-color: #202226;
+}
+
+.friend-tile img {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background-color: #3a3c3f;
+    object-fit: cover;
+}
+
+.friend-tile span {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background-color: #1f2124;
+    border: 1px dashed #4a4d51;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #f1f1f1;
+}
+
+.friend-tile p {
+    font-size: 12px;
+    margin: 8px 0 0 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Empty friend slots ready for you to fill in */
+.friend-tile--empty .empty-avatar {
+    display: block;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px dashed #4a4d51;
+}
+
+.friend-tile--empty:hover {
+    background-color: #202535;
+}
+
+/* --- GAMES --- */
+.game-tile {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 6px;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.game-tile:hover {
+    transform: translateY(-2px);
+    background-color: #202226;
+}
+
+.game-tile img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    background-color: #3a3c3f;
+    object-fit: cover;
+}
+
+.game-tile h3 {
+    font-size: 14px;
+    color: #f1f1f1;
+    margin: 10px 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.game-tile p {
+    font-size: 12px;
+    color: #9a9a9a;
+    margin: 0;
+}
+
+/* Empty game slots ready for you to fill in */
+.game-tile--empty .empty-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    background-color: #1f2124;
+    border: 1px dashed #4a4d51;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #8a8d91;
+}
+
+.game-tile--empty:hover {
+    background-color: #202535;
+}
+
+/* ================================================================
+   ACCENT / STATUS
+   ================================================================ */
+:root {
+    --accent-red: #e2241b;
+    --accent-red-hover: #c81f17;
+    --online-green: #3fd65a;
+    --card-bg: #1f2124;
+    --border-col: #2a2c2f;
+}
+
+/* --- HEADER: right group refinements --- */
+
+/* Notification/message badge dot */
+.icon-btn {
+    position: relative;
+}
+
+.badge-dot {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background-color: var(--accent-red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 2px solid #0e0f11;
+}
+
+/* Header profile pill becomes clickable dropdown trigger */
+.profile-pill {
+    cursor: pointer;
+    padding: 4px 8px 4px 4px;
+    border-radius: 20px;
+    transition: background-color 0.15s ease;
+    position: relative;
+}
+
+.profile-pill:hover,
+.profile-pill.is-open {
+    background-color: #232528;
+}
+
+.profile-pill .caret {
+    font-size: 9px;
+    color: #9a9a9a;
+    margin-left: 2px;
+}
+
+/* Generic dropdown panel used by notifications + profile menu */
+.dropdown-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 260px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-col);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    padding: 8px;
+    z-index: 50;
+    display: none;
+}
+
+.dropdown-panel.is-open {
+    display: block;
+}
+
+.dropdown-panel .dropdown-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #9a9a9a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 8px 10px 4px;
+}
+
+.dropdown-panel .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.dropdown-panel .dropdown-item:hover {
+    background-color: #26282c;
+}
+
+.dropdown-panel .dropdown-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-red);
+    flex-shrink: 0;
+}
+
+.dropdown-panel hr {
+    border: none;
+    border-top: 1px solid var(--border-col);
+    margin: 6px 0;
+}
+
+.dropdown-panel .dropdown-empty {
+    padding: 18px 10px;
+    text-align: center;
+    color: #8a8d91;
+    font-size: 12px;
+}
+
+/* Mobile nav toggle (hidden on desktop) */
+.nav-toggle {
+    display: none;
+}
+
+/* --- SIDEBAR presence status + collapse --- */
+aside {
+    position: relative;
+    flex-shrink: 0;
+    transition: width 0.18s ease;
+}
+
+aside > div:first-child {
+    position: relative;
+}
+
+.status-dot {
+    position: absolute;
+    left: 30px;
+    top: 28px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--online-green);
+    border: 2px solid #15171a;
+}
+
+aside .sidebar-toggle {
+    position: absolute;
+    top: 18px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #232528;
+    border: 1px solid var(--border-col);
+    color: #f1f1f1;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+aside.collapsed {
+    width: 68px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+aside.collapsed > div:first-child span,
+aside.collapsed > div:first-child strong,
+aside.collapsed li span.label,
+aside.collapsed b,
+aside.collapsed button span.label {
+    display: none;
+}
+
+aside.collapsed li a {
+    display: flex;
+    justify-content: center;
+}
+
+aside.collapsed button {
+    font-size: 16px;
+}
+
+/* --- SECTION header row w/ nav arrows --- */
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.section-head h2 {
+    margin-bottom: 0;
+}
+
+.carousel-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.carousel-controls button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #232528;
+    border: 1px solid var(--border-col);
+    color: #f1f1f1;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.carousel-controls button:hover {
+    background-color: #2f3236;
+}
+
+/* Rows become horizontally scrollable carousels instead of wrapping */
+.tile-row {
+    display: flex;
+    flex-wrap: nowrap !important;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+}
+
+.tile-row::-webkit-scrollbar {
+    display: none;
+}
+
+.tile-row > * {
+    flex-shrink: 0;
+}
+
+/* --- CONTINUE tiles (with progress bar) --- */
+.continue-tile {
+    position: relative;
+}
+
+.continue-tile .progress-track {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 44px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.18);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.continue-tile .progress-fill {
+    height: 100%;
+    background-color: var(--accent-red);
+    border-radius: 3px;
+}
+
+.continue-tile .play-badge {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    background-color: rgba(14, 15, 17, 0.85);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+}
+
+/* --- FOOTER --- */
+footer {
+    padding: 30px 40px 60px;
+    color: #6f7175;
+    font-size: 12px;
+    border-top: 1px solid var(--border-col);
+    margin-top: 10px;
+}
+
+footer .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+footer .footer-links a {
+    color: #9a9a9a;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+footer .footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 900px) {
+    header input {
+        display: none;
+    }
+
+    header nav {
+        display: none;
+    }
+
+    .nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        color: #f1f1f1;
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 4px;
+    }
+
+    aside {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        bottom: 0;
+        z-index: 40;
+        background-color: #0e0f11;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4);
+    }
+
+    aside.mobile-open {
+        transform: translateX(0);
+    }
+
+    aside .sidebar-toggle {
+        display: none;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    .game-tile {
+        width: 160px;
+    }
+}
+
+@media (max-width: 520px) {
+    header {
+        padding: 10px 14px;
+    }
+
+    header .site-logo {
+        height: 32px;
+    }
+
+    header > div:last-child > div span {
+        display: none;
+    }
+
+    section h1 {
+        font-size: 22px;
+    }
+
+    .friend-tile,
+    .friend-tile img,
+    .friend-tile span {
+        width: 72px;
+    }
+
+    .friend-tile img,
+    .friend-tile span {
+        height: 72px;
+    }
+}
